@@ -1,6 +1,11 @@
 ﻿.idea/
 .bin/
 .obj/
+
+[Bb]in/
+[Oo]bj/
+_UpgradeReport_Files/
+[Pp]ackages/
 # Created by https://www.toptal.com/developers/gitignore/api/rider
 # Edit at https://www.toptal.com/developers/gitignore?templates=rider
 
@@ -81,3 +86,7 @@ fabric.properties
 .idea/caches/build_file_checksums.ser
 
 # End of https://www.toptal.com/developers/gitignore/api/rider
+/database/database/obj/
+/database/database/obj/
+/database/database/obj/
+/database/database/obj/
