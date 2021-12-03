@@ -8,8 +8,5 @@
     <ItemGroup>
       <PackageReference Include="FluentMigrator" Version="3.3.1" />
     </ItemGroup>
-
-    <ItemGroup>
-      <Folder Include="Classes" />
-    </ItemGroup>
+    
 </Project>
