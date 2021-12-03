@@ -5,8 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:UILayer"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" 
+        Height="450" 
+        Width="800"
+        WindowStartupLocation="CenterScreen" 
+        ResizeMode="NoResize" 
+        WindowStyle="None"
+        Background="Transparent"
+        AllowsTransparency="True">
+    <Border Height="auto"
+            Width="auto"
+            CornerRadius="20"
+            Background="White">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="0.5*"/>
+            </Grid.RowDefinitions>
 
-    </Grid>
+            <Button x:Name="Exit"
+                    Style="{StaticResource jB}"
+                    Width="35"
+                    Height="35"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Right"
+                    BorderBrush="Transparent"
+                    Background="Transparent"
+                    Foreground="Red"
+                    Content="X"
+                    FontSize="28"
+                    Click="Exit_OnClick"/>
+
+            <Button x:Name="importFile"
+                    Style="{StaticResource jB}"
+                    Background="Green"
+                    Content="Импорт"
+                    FontSize="30"
+                    Grid.Row="1"
+                    Height="50"
+                    Width="200"
+                    Click="ImportFile_OnClick"/>
+        </Grid>
+
+    </Border>
 </Window>

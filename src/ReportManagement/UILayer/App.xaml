@@ -4,6 +4,24 @@
              xmlns:local="clr-namespace:UILayer"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style x:Key="jB" TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="Control.IsMouseOver" Value="True">
+                    <Setter Property="Control.FontWeight" Value="Medium" />
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="10"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>
