@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UILayer", "UILayer\UILayer.csproj", "{7424478D-C127-4605-AFF5-5AC1E1B0E812}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataProcessing", "DataProcessing\DataProcessing.csproj", "{8CD2EBCE-9087-491A-A5D4-177C6856ADA5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{061D0654-4842-4B43-867E-97E58E3E0E0D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7424478D-C127-4605-AFF5-5AC1E1B0E812}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7424478D-C127-4605-AFF5-5AC1E1B0E812}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7424478D-C127-4605-AFF5-5AC1E1B0E812}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7424478D-C127-4605-AFF5-5AC1E1B0E812}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8CD2EBCE-9087-491A-A5D4-177C6856ADA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8CD2EBCE-9087-491A-A5D4-177C6856ADA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8CD2EBCE-9087-491A-A5D4-177C6856ADA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8CD2EBCE-9087-491A-A5D4-177C6856ADA5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{061D0654-4842-4B43-867E-97E58E3E0E0D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{061D0654-4842-4B43-867E-97E58E3E0E0D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{061D0654-4842-4B43-867E-97E58E3E0E0D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{061D0654-4842-4B43-867E-97E58E3E0E0D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
