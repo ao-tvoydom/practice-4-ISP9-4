@@ -1,6 +1,6 @@
 using System;
 
-namespace DatabaseInteraction
+namespace Infrastructure
 {
     public class Class1
     {

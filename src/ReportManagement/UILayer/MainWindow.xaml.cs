@@ -23,6 +23,7 @@ namespace UILayer
         public MainWindow()
         {
             InitializeComponent();
+            
         }
     }
 }
