@@ -9,4 +9,11 @@
       <ProjectReference Include="..\Infrastructure\Infrastructure.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <PackageReference Include="ClosedXML" Version="0.95.4" />
+      <PackageReference Include="ClosedXML.Report" Version="0.2.4" />
+      <PackageReference Include="ClosedXML.Signed" Version="0.95.4" />
+      <PackageReference Include="ClosedXML_Excel" Version="1.0.0" />
+    </ItemGroup>
+
 </Project>
