@@ -6,45 +6,65 @@
         xmlns:local="clr-namespace:UILayer"
         mc:Ignorable="d"
         Title="MainWindow" 
-        Height="450" 
-        Width="800"
+        Height="300" 
+        Width="500"
         WindowStartupLocation="CenterScreen" 
         ResizeMode="NoResize" 
         WindowStyle="None"
         Background="Transparent"
         AllowsTransparency="True">
+
     <Border Height="auto"
             Width="auto"
-            CornerRadius="20"
+            CornerRadius="20" 
             Background="White">
         <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="1*"/>
+                <ColumnDefinition Width="1*"/>
+            </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
+                <RowDefinition Height="0.3*"/>
                 <RowDefinition Height="2*"/>
-                <RowDefinition Height="0.5*"/>
             </Grid.RowDefinitions>
 
             <Button x:Name="Exit"
-                    Style="{StaticResource jB}"
-                    Width="35"
-                    Height="35"
+                    Style="{StaticResource ExitStyle}"
+                    Content="X"
+                    Width="30"
+                    Height="40"
                     VerticalAlignment="Top"
                     HorizontalAlignment="Right"
                     BorderBrush="Transparent"
                     Background="Transparent"
-                    Foreground="Red"
-                    Content="X"
-                    FontSize="28"
+                    Foreground="#FF009933"
+                    Grid.Column="1" 
+                    FontSize="30"
                     Click="Exit_OnClick"/>
 
-            <Button x:Name="importFile"
-                    Style="{StaticResource jB}"
-                    Background="Green"
-                    Content="Импорт"
-                    FontSize="30"
+            <Button x:Name="Create"
+                    Style="{StaticResource ButtonStyle}"
+                    Content="Создать отчёт"
+                    Background="#FF009933"
+                    Foreground="White"
+                    BorderThickness="0"
+                    FontSize="24"
                     Grid.Row="1"
-                    Height="50"
+                    Height="70"
                     Width="200"
-                    Click="ImportFile_OnClick"/>
+                    Click="Create_OnClick"  />
+
+            <Button x:Name="import"
+                    Style="{StaticResource OpenFileStyle}"
+                    Content="Выбрать файлы"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    Background="Transparent"
+                    Foreground="#FF009933"
+                    FontSize="24"
+                    Height="150"
+                    Width="200" 
+                    Click="Import_OnClick" />
         </Grid>
 
     </Border>
