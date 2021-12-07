@@ -4,7 +4,8 @@
              xmlns:local="clr-namespace:UILayer"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         <Style x:Key="ButtonStyle" TargetType="Button">
+        
+        <Style x:Key="ButtonStyle" TargetType="Button">
             <Style.Triggers>
                 <Trigger Property="Control.IsMouseOver" Value="True">
                     <Setter Property="Control.FontWeight" Value="Medium" />

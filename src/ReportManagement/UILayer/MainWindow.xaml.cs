@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows;
-using System.IO;
 using Microsoft.Win32;
 
 namespace UILayer
@@ -10,6 +9,7 @@ namespace UILayer
     /// </summary>
     public partial class MainWindow : Window
     {
+        public string[] pathToFile; 
         public MainWindow()
         {
             InitializeComponent();
@@ -20,12 +20,21 @@ namespace UILayer
             Application.Current.Shutdown();
         }
 
-        private void Create_OnClick(object sender, RoutedEventArgs e)
+        private void CreateReport_OnClick(object sender, RoutedEventArgs e)
         {
-            
+            if (pathToFile == null)
+            {
+                MessageBox.Show("Выберите файлы");
+            }
+            else
+            {
+                ResultWindow resultWindow = new ResultWindow();
+                resultWindow.Show();
+                this.Close();
+            }
         }
         
-        private void Import_OnClick(object sender, RoutedEventArgs e)
+        private void ImportFile_OnClick(object sender, RoutedEventArgs e)
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
 
@@ -41,6 +50,7 @@ namespace UILayer
 
             if (result == true)
             {
+                pathToFile = openFileDialog.FileNames;
                 //openFileDialog.FileNames // массив с полными путями всех выбранных файлов
                 // выполняется при нажатии ОК на выборе файлов
             }
