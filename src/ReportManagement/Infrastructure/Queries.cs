@@ -21,22 +21,22 @@ namespace Infrastructure
             using (var db = new SqlConnection(ConnectionString))
             {
                 var response = db.Query<ReportData>(@"SELECT Id,
-       NameBlockStatus,
-       NameBrand,
-       NameDepartment,
-       Realization,
-       ProductDisposal,
-       ProductSurplus,
-       LastShipmentDate,
-       LastSaleDate,
-       SellingPrice,
-       NameUnit,
-       CodeStatusProduct,
-       NameSection,
-       CodeProduct,
-       NameProduct,
-       ExpirationDate
-       FROM [dbo].[MainView]");
+                     NameBlockStatus,
+                     NameBrand,
+                     NameDepartment,
+                     Realization,
+                     ProductDisposal,
+                     ProductSurplus,
+                     LastShipmentDate,
+                     LastSaleDate,
+                     SellingPrice,
+                     NameUnit,
+                     CodeStatusProduct,
+                     NameSection,
+                     CodeProduct,
+                     NameProduct,
+                     ExpirationDate
+                     FROM [dbo].[MainView]");
 
                 return response.ToList();
 
@@ -50,25 +50,24 @@ namespace Infrastructure
         {
             using (var db = new SqlConnection(ConnectionString))
             {
-                var response = db.QueryFirst<ReportData>(
-                    @"SELECT Id,
-       NameBlockStatus,
-       NameBrand,
-       NameDepartment,
-       Realization,
-       ProductDisposal,
-       ProductSurplus,
-       LastShipmentDate,
-       LastSaleDate,
-       SellingPrice,
-       NameUnit,
-       CodeStatusProduct,
-       NameSection,
-       CodeProduct,
-       NameProduct,
-       ExpirationDate 
-FROM [dbo].[MainView] 
-Where Id = @Id",
+                var response = db.QueryFirst<ReportData>(@"SELECT Id,
+                    NameBlockStatus,
+                    NameBrand,
+                    NameDepartment,
+                    Realization,
+                    ProductDisposal,
+                    ProductSurplus,
+                    LastShipmentDate,
+                    LastSaleDate,
+                    SellingPrice,
+                    NameUnit,
+                    CodeStatusProduct,
+                    NameSection,
+                    CodeProduct,
+                    NameProduct,
+                    ExpirationDate 
+                    FROM [dbo].[MainView] 
+                    Where Id = @Id",
                     new { Id = reportId});
 
                 return response;
