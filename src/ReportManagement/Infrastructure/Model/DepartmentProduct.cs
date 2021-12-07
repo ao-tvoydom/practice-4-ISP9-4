@@ -2,7 +2,6 @@
 
 namespace Infrastructure
 {
-    
     public class DepartmentProduct
     {
         public int Id { get; set; }
@@ -17,12 +16,9 @@ namespace Infrastructure
         
         public decimal ProductSurplus { get; set; }
         
-        public DateTime LastShipmentDate { get; set; }
+        public DateOnly LastShipmentDate { get; set; }
         
-        public DateTime LastSaleDate { get; set; }
+        public DateOnly LastSaleDate { get; set; }
         
-
-
-
     }
 }
