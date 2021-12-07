@@ -2,53 +2,24 @@
 using Dapper;
 using System.Data.SqlClient;
 using System.Linq;
+using Infrastructure.Model;
+using Infrastructure.Interfaces;
 
 namespace Infrastructure
 {
-    public static class Queries
+    public class DatabaseQueries : IQuery
     {
 
-        private  static readonly string ConnectionString;
+        private readonly string _connectionString;
 
-        static Queries()
+        public DatabaseQueries(string connectionString)
         {
-            ConnectionString =
-                "Data Source=(local);Initial Catalog=ReportDB;Integrated Security=True;MultipleActiveResultSets=True";
-        }
-        
-        public static List<ReportData> GetReportData()
-        {
-            using (var db = new SqlConnection(ConnectionString))
-            {
-                var response = db.Query<ReportData>(@"SELECT Id,
-                     NameBlockStatus,
-                     NameBrand,
-                     NameDepartment,
-                     Realization,
-                     ProductDisposal,
-                     ProductSurplus,
-                     LastShipmentDate,
-                     LastSaleDate,
-                     SellingPrice,
-                     NameUnit,
-                     CodeStatusProduct,
-                     NameSection,
-                     CodeProduct,
-                     NameProduct,
-                     ExpirationDate
-                     FROM [dbo].[MainView]");
-
-                return response.ToList();
-
-            }
-            
-            
-            
+            _connectionString = connectionString;
         }
 
-        public static ReportData GetReportData(int reportId)
+        ReportData IQuery.GetReportData(int reportId)
         {
-            using (var db = new SqlConnection(ConnectionString))
+            using (var db = new SqlConnection(_connectionString))
             {
                 var response = db.QueryFirst<ReportData>(@"SELECT Id,
                     NameBlockStatus,
@@ -74,8 +45,33 @@ namespace Infrastructure
 
             }
         }
-        
-        
+
+        List<ReportData> IQuery.GetReportData()
+        {
+            using (var db = new SqlConnection(_connectionString))
+            {
+                var response = db.Query<ReportData>(@"SELECT Id,
+                     NameBlockStatus,
+                     NameBrand,
+                     NameDepartment,
+                     Realization,
+                     ProductDisposal,
+                     ProductSurplus,
+                     LastShipmentDate,
+                     LastSaleDate,
+                     SellingPrice,
+                     NameUnit,
+                     CodeStatusProduct,
+                     NameSection,
+                     CodeProduct,
+                     NameProduct,
+                     ExpirationDate
+                     FROM [dbo].[MainView]");
+
+                return response.ToList();
+
+            }
+        }
         
     }
 }
