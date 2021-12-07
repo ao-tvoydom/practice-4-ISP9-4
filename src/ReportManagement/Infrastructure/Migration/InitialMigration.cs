@@ -2,6 +2,7 @@
 
 namespace Infrastructure.Migration
 {
+    [Migration(1)]
     public class InitialMigration : FluentMigrator.Migration
     {
         public override void Up()

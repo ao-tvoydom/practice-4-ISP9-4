@@ -13,34 +13,21 @@ namespace Infrastructure
         static Queries()
         {
             ConnectionString =
-                "Data Source=(localdb)\v11.0;Initial Catalog=ReportDB;Integrated Security=True";
+                "Data Source=(local);Initial Catalog=ReportDB;Integrated Security=True;MultipleActiveResultSets=True";
         }
         
         public static List<ReportData> GetReportData()
         {
             using (var db = new SqlConnection(ConnectionString))
             {
-                var response = db.Query<ReportData>(@"SELECT Id, 
-       NameBlockStatus, 
-       NameBrand, 
-       NameDepartment, 
-       Realization, 
-       ProductDisposal, 
-       ProductSurplus, 
-       LastShipmentDate, 
-       LastSaleDate, 
-       SellingPrice, 
-       NameUnit, 
-       CodeStatusProduct, 
-       NameSection, 
-       CodeProduct, 
-       NameProduct, 
-       ExpirationDate 
-FROM [dbo].[MainView]");
+                var response = db.Query<ReportData>(@"SELECT * FROM [dbo].[MainView]");
 
                 return response.ToList();
 
             }
+            
+            
+            
         }
 
         public static ReportData GetReportData(int reportId)
@@ -48,29 +35,15 @@ FROM [dbo].[MainView]");
             using (var db = new SqlConnection(ConnectionString))
             {
                 var response = db.QueryFirst<ReportData>(
-                    @"SELECT Id, 
-       NameBlockStatus, 
-       NameBrand, 
-       NameDepartment, 
-       Realization, 
-       ProductDisposal, 
-       ProductSurplus, 
-       LastShipmentDate, 
-       LastSaleDate, 
-       SellingPrice, 
-       NameUnit, 
-       CodeStatusProduct, 
-       NameSection, 
-       CodeProduct, 
-       NameProduct, 
-       ExpirationDate 
-FROM [dbo].[MainView] 
-Where Id = @Id",
+                    @"SELECT * FROM [dbo].[MainView] Where Id = @Id",
                     new { Id = reportId});
 
                 return response;
 
             }
         }
+        
+        
+        
     }
 }

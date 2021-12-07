@@ -1,4 +1,4 @@
-﻿namespace Infrastructure.Model
+namespace Infrastructure
 {
     public class ReportData
     {
