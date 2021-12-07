@@ -1,4 +1,6 @@
-﻿namespace Infrastructure
+﻿using System;
+
+namespace Infrastructure
 {
     public class ReportData
     {

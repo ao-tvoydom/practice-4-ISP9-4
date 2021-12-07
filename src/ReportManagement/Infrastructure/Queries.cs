@@ -26,8 +26,6 @@ namespace Infrastructure
 
             }
             
-            
-            
         }
 
         public static ReportData GetReportData(int reportId)
