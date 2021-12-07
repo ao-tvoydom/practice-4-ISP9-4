@@ -9,10 +9,10 @@ using Infrastructure.Model.ReportData;
 
 namespace DataProcessing
 {
-    static public class ExcelConverter
+    public static class ExcelConverter
     {
         public static XLWorkbook Worksheet;
-        static public void GetFile(string filePath)
+        public static void GetFile(string filePath)
         {
            
             string fileName = filePath;
@@ -21,73 +21,32 @@ namespace DataProcessing
            
         }
 
-        static public void SetFile()
+        public static List<ReportData> ExcelToList()
         {
-            List<ReportData> ReportList = new List<ReportData>();
-            for (int i = 0; i < 10; i++)
+            List<ReportData> list = new List<ReportData>();
+            foreach (DataRow row in data.Rows)
             {
-                ReportData reportData = new ReportData();
-                var row = WorkSheet.Row(i);
-                for (int j = 0; j < 10; j++)
-                {
-                    var cell = row.Cell(j);
-                    switch (j)
-                    {
-                        case 1:
-                            reportData.NameBlockStatus = cell.Value.ToString();                    
-                            break;
-                        case 2:
-                            reportData.NameBrand = cell.Value.ToString();
-                            break;
-                        case 3:
-                            reportData.NameDepartment = cell.Value.ToString();
-                            break;
-                        case 4:
-                            reportData.Realization = Convert.ToDecimal(cell.Value.ToString());
-                            break;
-                        case 5:
-                            reportData.ProductDisposal = Convert.ToDecimal(cell.Value.ToString());
-                            break;
-                        case 6:
-                            reportData.ProductSurplus = Convert.ToDecimal(cell.Value.ToString());
-                            break;
-                        case 7:
-                            reportData.LastShipmentDate = Convert.ToDateTime(cell.Value.ToString());
-                            break;
-                        case 8:
-                            reportData.LastSaleDate = Convert.ToDateTime(cell.Value.ToString());
-                            break;
-                        case 9:
-                            reportData.Id = Convert.ToInt32(cell.Value.ToString());
-                            break;
-                        case 10:
-                            reportData.SellingPrice = Convert.ToDecimal(cell.Value.ToString());
-                            break;
-                        case 11:
-                            reportData.NameUnit = cell.Value.ToString();
-                            break;
-                        case 12:
-                            reportData.CodeStatusProduct = Convert.ToInt32(cell.Value.ToString());
-                            break;
-                        case 13:
-                            reportData.NameSection = cell.Value.ToString();
-                            break;
-                        case 14:
-                            reportData.CodeProduct = Convert.ToInt64(cell.Value.ToString());
-                            break;
-                        case 15:
-                            reportData.NameProduct = cell.Value.ToString();
-                            break;
-                        case 16:
-                            reportData.ExpirationDate = Convert.ToInt32(cell.Value.ToString());
-                            break;
-                    }
-                    ReportList.Add(reportData);
-                }
-
+                ReportData item = new ReportData();
+                item.NameBlockStatus = row[5].ToString();
+                item.NameBrand  = row[4].ToString();
+                item.NameDepartment  = row[0].ToString();
+                item.Realization = Convert.ToDecimal(row[9].ToString());
+                item.ProductDisposal = Convert.ToDecimal(row[10].ToString());
+                item.ProductSurplus = Convert.ToDecimal(row[11].ToString());
+                item.LastShipmentDate = Convert.ToDateTime(row[13].ToString());
+                item.LastSaleDate = Convert.ToDateTime(row[14].ToString());
+                item.SellingPrice = Convert.ToDecimal(row[8].ToString());
+                item.NameUnit  = row[7].ToString();
+                item.CodeStatusProduct  = Convert.ToInt32(row[6].ToString());
+                item.NameSection = row[1].ToString();
+                item.CodeProduct = Convert.ToInt64(row[2].ToString());
+                item.NameProduct = row[3].ToString();
+                item.ExpirationDate = Convert.ToInt64(row[15].ToString());
+                list.Add(item);
             }
-            return ReportList;
+            return list;
+            
         }
-        }
+        
     }
 }
