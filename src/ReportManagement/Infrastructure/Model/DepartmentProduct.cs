@@ -1,6 +1,6 @@
 ﻿using  System;
 
-namespace Infrastructure
+namespace Infrastructure.Model
 {
     public class DepartmentProduct
     {
