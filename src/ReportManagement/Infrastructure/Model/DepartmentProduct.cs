@@ -2,7 +2,6 @@
 
 namespace Infrastructure
 {
-    
     public class DepartmentProduct
     {
         public int Id { get; set; }
@@ -21,8 +20,5 @@ namespace Infrastructure
         
         public DateTime LastSaleDate { get; set; }
         
-
-
-
     }
 }

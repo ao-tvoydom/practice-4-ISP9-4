@@ -9,5 +9,6 @@
         public int BlockStatusId { get; set; }
         
         public decimal SellingPrice { get; set; }
+        
     }
 }
