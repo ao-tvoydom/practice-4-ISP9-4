@@ -13,7 +13,7 @@ using Microsoft.Office.Interop.Excel;
 
 namespace DataProcessing
 {
-    public static class ExcelConverter
+    public static class ExcelToList
     {
         public static XLWorkbook Workbook;
         public static void GetFile(string filePath)
@@ -67,3 +67,4 @@ namespace DataProcessing
         }
     }
 }
+ 
