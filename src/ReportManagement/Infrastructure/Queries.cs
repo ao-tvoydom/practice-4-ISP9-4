@@ -159,20 +159,20 @@ namespace Infrastructure
                         NameProduct = reportData.NameProduct,
                         CodeProduct = reportData.CodeProduct
                     });
-                db.Execute(@"INSERT INTO [dbo].[DepartmentProduct](DepartmentId),
-                                                            (ProductId),
-                                                            (Realization),
-                                                            (ProductDisposal),
-                                                            (ProductSurplus),
-                                                            (LastShipmentDate),
-                                                            (LastSaleDate)
-                                                    VALUES (@DepartmentId),
-                                                            (@ProductId),
-                                                            (@Realization),
-                                                            (@ProductDisposal),
-                                                            (@ProductSurplus),
-                                                            (@LastShipmentDate),
-                                                            (@LastSaleDate);",
+                db.Execute(@"INSERT INTO [dbo].[DepartmentProduct]([DepartmentId],
+                                                            [ProductId],
+                                                            [Realization],
+                                                            [ProductDisposal],
+                                                            [ProductSurplus],
+                                                            [LastShipmentDate],
+                                                            [LastSaleDate]) 
+                                                     VALUES (@DepartmentId,
+                                                            @ProductId,
+                                                            @Realization,
+                                                            @ProductDisposal,
+                                                            @ProductSurplus,
+                                                            @LastShipmentDate,
+                                                            @LastSaleDate);",
                     new
                     {
                         DepartmentId = departmentProduct.DepartmentId,
@@ -203,12 +203,12 @@ namespace Infrastructure
                                     WHERE NameBlockStatus = @NameBlockStatus",
                     new{NameBlockStatus = reportData.NameBlockStatus});
                 
-                db.Execute(@"INSERT INTO [dbo].[Order](DepartmentProductId),
-                                                            (BlockStatusId),
-                                                            (SellingPrice)
-                                                    VALUES (@DepartmentProductId),
-                                                            (@BlockStatusId),
-                                                            (@SellingPrice);",
+                db.Execute(@"INSERT INTO [dbo].[Order]([DepartmentProductId],
+                                                            [BlockStatusId],
+                                                            [SellingPrice])
+                                                    VALUES (@DepartmentProductId,
+                                                            @BlockStatusId,
+                                                            @SellingPrice);",
                     new
                     {
                         DepartmentProductId = order.DepartmentProductId,
@@ -264,27 +264,27 @@ namespace Infrastructure
                                     WHERE NameUnit = @NameUnit",
                     new{NameUnit = reportData.NameUnit});
                 
-                db.Execute(@"INSERT INTO [dbo].[Product](CodeProduct),
-                                                            (NameProduct),
-                                                            (BrandId),
-                                                            (StatusProductId),
-                                                            (SectionId),
-                                                            (ExpirationDate),
-                                                            (UnitId)
-                                                    VALUES (@CodeProduct),
-                                                            (@NameProduct),
-                                                            (@BrandId),
-                                                            (@StatusProductId),
-                                                            (@SectionId),
-                                                            (@ExpirationDate),
-                                                            (@UnitId);",
+                db.Execute(@"INSERT INTO [dbo].[Product]([CodeProduct],
+                                                            [NameProduct],
+                                                            [BrandId],
+                                                            [StatusProductId],
+                                                            [SectionId],
+                                                            [ExpirationDate],
+                                                            [UnitId])
+                                                    VALUES (@CodeProduct,
+                                                            @NameProduct,
+                                                            @BrandId,
+                                                            @StatusProductId,
+                                                            @SectionId,
+                                                            @ExpirationDate,
+                                                            @UnitId);",
                     new
                     {
                         CodeProduct = product.Code,
                         NameProduct = product.Name,
                         BrandId = product.BrandId,
-                        StatusProduct = product.StatusProductId,
-                        Section = product.SectionId,
+                        StatusProductId = product.StatusProductId,
+                        SectionId = product.SectionId,
                         ExpirationDate = product.ExpirationDate,
                         UnitId = product.UnitId
                     });
