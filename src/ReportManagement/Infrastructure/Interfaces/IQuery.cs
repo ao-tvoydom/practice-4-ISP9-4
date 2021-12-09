@@ -9,7 +9,7 @@ namespace Infrastructure.Interfaces
 
          ReportData GetReportData(int reportId);
 
-         void InsertReportData(List<ReportData> list);
+         void InsertReportData(List<ReportData> reportDataList);
          
          void InsertBlockStatus(ReportData reportData);
 
@@ -17,9 +17,9 @@ namespace Infrastructure.Interfaces
          
          void InsertDepartment(ReportData reportData);
          
-         void InsertDepartmentProduct(ReportData reportData);
+         int InsertDepartmentProduct(ReportData reportData);
          
-         void InsertOrder(ReportData reportData);
+         void InsertOrder(ReportData reportData, int departmentProductId);
          
          void InsertProduct(ReportData reportData);
          
