@@ -28,5 +28,6 @@ namespace Infrastructure.Interfaces
          void InsertStatusProduct(ReportData reportData);
          
          void InsertUnit(ReportData reportData);
+         
     }
 }
