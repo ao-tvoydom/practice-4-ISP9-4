@@ -45,7 +45,7 @@ namespace Infrastructure
                 return response;
 
             }
-        } 
+        }
 
         public void InsertReportData(List<ReportData> reportDataList)
         {
