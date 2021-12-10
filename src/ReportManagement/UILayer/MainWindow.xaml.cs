@@ -12,6 +12,8 @@ namespace UILayer
     {
         private string[] _pathToFile = null!; 
         
+        const string defExtension = "xls";
+        
         public static MainWindow Window;
         public MainWindow()
         {
@@ -47,28 +49,26 @@ namespace UILayer
         
         private void ImportFile_OnClick(object sender, RoutedEventArgs e)
         {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-
-            openFileDialog.InitialDirectory = @"c:\";
-            openFileDialog.Multiselect = true;
-            const string defExtension = "xls";
-            openFileDialog.DefaultExt = defExtension;
-            openFileDialog.Filter = "xls files (*.xls)|*.xls|xlsx files (*.xlsx)|*.xlsx";
-            openFileDialog.FilterIndex = 2;
-            openFileDialog.RestoreDirectory = true;
+            var openFileDialog = new OpenFileDialog
+            {
+                InitialDirectory = @"c:\",
+                Multiselect = true,
+                DefaultExt = defExtension,
+                Filter = "xls files (*.xls)|*.xls|xlsx files (*.xlsx)|*.xlsx",
+                FilterIndex = 2,
+                RestoreDirectory = true
+            };
 
             Nullable<bool> result = openFileDialog.ShowDialog();
 
-            if (result == true)
-            {
-                _pathToFile = openFileDialog.FileNames;
-                //openFileDialog.FileNames // массив с полными путями всех выбранных файлов
-                // выполняется при нажатии ОК на выборе файлов
-            }
-            else
-            {
-                MessageBox.Show("Файлы не выбраны");
-            }
+                if (result == true) // выполняется при нажатии ОК на выборе файлов
+                {
+                    //openFileDialog.FileNames // массив с полными путями всех выбранных файлов
+                }
+                else
+                {
+                    MessageBox.Show("Файлы не выбраны");
+                }
         }
         private void Exit_OnClick(object sender, RoutedEventArgs e)
         {
