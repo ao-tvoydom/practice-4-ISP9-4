@@ -44,7 +44,7 @@ namespace Infrastructure
                 return response;
 
             }
-        }
+        } 
 
         List<ReportData> IQuery.GetReportData()
         {
