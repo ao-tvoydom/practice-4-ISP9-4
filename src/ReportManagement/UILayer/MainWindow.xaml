@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:UILayer"
         mc:Ignorable="d"
         Title="MainWindow" 
+        Loaded="MainWindow_OnLoaded"
         Height="300" 
         Width="500"
         WindowStartupLocation="CenterScreen" 
@@ -17,7 +18,8 @@
     <Border Height="auto"
             Width="auto"
             CornerRadius="20" 
-            Background="White">
+            Background="White"
+            MouseDown="Drag">
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
