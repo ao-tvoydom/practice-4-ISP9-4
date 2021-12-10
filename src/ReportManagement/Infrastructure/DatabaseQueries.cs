@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Dapper;
 using System.Data.SqlClient;
 using System.Linq;
+using Infrastructure.Factory;
 using Infrastructure.Model;
 using Infrastructure.Interfaces;
 
@@ -10,17 +11,21 @@ namespace Infrastructure
 {
     public class DatabaseQueries : IQuery
     {
-
-        private readonly string _connectionString;
+        private readonly DbConnectionFactory _dbConnectionFactory;
 
         public DatabaseQueries(string connectionString)
         {
-            _connectionString = connectionString;
+            _dbConnectionFactory = new DbConnectionFactory(connectionString);
+        }
+
+        private SqlConnection GetSqlConnection()
+        {
+            return (SqlConnection)_dbConnectionFactory.CreateSqlServerConnection();
         }
 
         ReportData IQuery.GetReportData(int reportId)
         {
-            using (var db = new SqlConnection(_connectionString))
+            using (var db = GetSqlConnection())
             {
                 var response = db.QueryFirst<ReportData>(@"SELECT Id,
                     NameBlockStatus,
@@ -49,7 +54,7 @@ namespace Infrastructure
 
         public void InsertReportData(List<ReportData> reportDataList)
         {
-            using (var db = new SqlConnection(_connectionString))
+            using (var db =  GetSqlConnection())
             {
                 foreach (var reportData in reportDataList)
                 {
@@ -69,7 +74,7 @@ namespace Infrastructure
         public void InsertBlockStatus(ReportData reportData)
         {
             BlockStatus blockStatus = new BlockStatus();
-            using (var db = new SqlConnection(_connectionString))
+            using (var db =  GetSqlConnection())
             {
                 var BlockStatus = db.Query<BlockStatus>(@"SELECT * 
                         FROM BlockStatus 
@@ -92,7 +97,7 @@ namespace Infrastructure
         public void InsertBrand(ReportData reportData)
         {
             Brand brand = new Brand();
-            using (var db = new SqlConnection(_connectionString))
+            using (var db =  GetSqlConnection())
             {
                 var Brand = db.Query<Brand>(@"SELECT * 
                         FROM Brand 
@@ -115,7 +120,7 @@ namespace Infrastructure
         public void InsertDepartment(ReportData reportData)
         {
             Department department = new Department();
-            using (var db = new SqlConnection(_connectionString))
+            using (var db = GetSqlConnection())
             {
                 var Department = db.Query<Department>(@"SELECT * 
                         FROM Department 
@@ -143,7 +148,7 @@ namespace Infrastructure
             departmentProduct.ProductSurplus = reportData.ProductSurplus;
             departmentProduct.LastSaleDate = reportData.LastSaleDate;
             departmentProduct.LastShipmentDate = reportData.LastShipmentDate;
-            using (var db = new SqlConnection(_connectionString))
+            using (var db = GetSqlConnection())
             {
                 departmentProduct.DepartmentId = db.QueryFirst<int>(@"SELECT Id
                                     FROM Department
@@ -196,7 +201,7 @@ namespace Infrastructure
             Order order = new Order();
             order.SellingPrice = reportData.SellingPrice;
             order.DepartmentProductId = departmentProductId;
-            using (var db = new SqlConnection(_connectionString))
+            using (var db = GetSqlConnection())
             {
                 order.BlockStatusId = db.QueryFirst<int>(@"SELECT Id
                                     FROM BlockStatus
@@ -222,7 +227,7 @@ namespace Infrastructure
         {
             Product product = new Product();
             List<Product> DublicateProducts = new List<Product>();
-            using (var db = new SqlConnection(_connectionString))
+            using (var db = GetSqlConnection())
             {
                 DublicateProducts.AddRange(db.Query<Product>(@"SELECT *
                                     FROM Product
@@ -242,7 +247,7 @@ namespace Infrastructure
             product.Code = reportData.CodeProduct;
             product.Name = reportData.NameProduct;
             product.ExpirationDate = reportData.ExpirationDate;
-            using (var db = new SqlConnection(_connectionString))
+            using (var db = GetSqlConnection())
             {
                 product.BrandId = db.QueryFirst<int>(@"SELECT Id
                                     FROM Brand
@@ -294,7 +299,7 @@ namespace Infrastructure
         public void InsertSection(ReportData reportData)
         {
             Section section = new Section();
-            using (var db = new SqlConnection(_connectionString))
+            using (var db = GetSqlConnection())
                         {
                             var Section = db.Query<Section>(@"SELECT * 
                                     FROM Section 
@@ -317,7 +322,7 @@ namespace Infrastructure
         public void InsertStatusProduct(ReportData reportData)
         {
             StatusProduct statusProduct = new StatusProduct();
-            using (var db = new SqlConnection(_connectionString))
+            using (var db = GetSqlConnection())
             {
                 var StatusProduct = db.Query<StatusProduct>(@"SELECT * 
                         FROM StatusProduct 
@@ -340,7 +345,7 @@ namespace Infrastructure
         public void InsertUnit(ReportData reportData)
             {
                 Unit unit = new Unit();
-                using (var db = new SqlConnection(_connectionString))
+                using (var db = GetSqlConnection())
                 {
                     var Unit = db.Query<Unit>(@"SELECT * 
                         FROM Unit 
@@ -362,7 +367,7 @@ namespace Infrastructure
             }
         List < ReportData > IQuery.GetReportData()
             {
-                using (var db = new SqlConnection(_connectionString))
+                using (var db = GetSqlConnection())
                 {
                     var response = db.Query<ReportData>(@"SELECT Id,
                      NameBlockStatus,
