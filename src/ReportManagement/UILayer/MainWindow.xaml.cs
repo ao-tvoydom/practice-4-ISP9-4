@@ -59,7 +59,7 @@ namespace UILayer
                 RestoreDirectory = true
             };
 
-            Nullable<bool> result = openFileDialog.ShowDialog();
+            bool? result = openFileDialog.ShowDialog();
 
                 if (result == true) // выполняется при нажатии ОК на выборе файлов
                 {
