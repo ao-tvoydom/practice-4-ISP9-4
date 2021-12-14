@@ -57,7 +57,7 @@ namespace Infrastructure
 
             db.Open();
 
-            SqlTransaction transaction = db.BeginTransaction();
+            using SqlTransaction transaction = db.BeginTransaction();
 
             try
             {
@@ -76,9 +76,23 @@ namespace Infrastructure
 
                 transaction.Commit();
             }
-            catch
+            catch (Exception ex1)
             {
-                transaction.Rollback();
+                Console.WriteLine($"Exception message: {ex1.Message}");
+                
+                try
+                {
+                    transaction.Rollback();
+                }
+                catch(Exception ex2)
+                {
+                    Console.WriteLine($"Exception message: {ex2.Message}");
+                    throw;
+                }
+                
+                
+                throw;
+
             }
         }
 
