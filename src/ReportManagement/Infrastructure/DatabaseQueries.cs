@@ -20,7 +20,7 @@ namespace Infrastructure
 
         private SqlConnection GetSqlConnection()
         {
-            return (SqlConnection)_dbConnectionFactory.CreateSqlServerConnection();
+            return (SqlConnection)_dbConnectionFactory.CreateSqlConnection();
         }
 
         ReportData IQuery.GetReportData(int reportId)

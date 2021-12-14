@@ -12,33 +12,30 @@ namespace Infrastructure.Factory
         
         public DbConnectionFactory(string connectionString)
         {
+            if (String.IsNullOrWhiteSpace(connectionString))
+            {
+                throw new Exception("Пустая сторока подключения!");
+            }
             _connectionString = connectionString;
         }
 
         private string GetConnectionString()
         {
-            if (_connectionString == null)
-            {
-                throw new Exception("Connection string was not found");
-            }
-
             return _connectionString;
         }
 
-        public IDbConnection CreateSqlServerConnection()
+        public IDbConnection CreateSqlConnection()
         {
             return CreateDbConnection(GetConnectionString());
         }
         
         private IDbConnection CreateDbConnection(string connectionString)
         {
-            DbConnection connection = null;
-
-            if (connectionString != null)
-            {
-                connection = new SqlConnection();
-                connection.ConnectionString = connectionString;
-            }
+            DbConnection connection;
+            
+            connection = new SqlConnection(); 
+            connection.ConnectionString = connectionString;
+            
             return connection;
         }
     }
