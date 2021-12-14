@@ -6,8 +6,7 @@ namespace DataProcessing.Interfaces
 {
     public interface IExcelConverter
     {
-        public List<ReportData> ExcelToList();
-        public void GetFile(string filePath);
-        public XLWorkbook ListToExcel();
+        List<ReportData> ExcelToList();
+        XLWorkbook ListToExcel();
     }
 }
