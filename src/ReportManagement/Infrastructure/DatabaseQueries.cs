@@ -20,13 +20,13 @@ namespace Infrastructure
 
         private SqlConnection GetSqlConnection()
         {
-            return (SqlConnection)_dbConnectionFactory.CreateSqlConnection();
+            return (SqlConnection) _dbConnectionFactory.CreateSqlConnection();
         }
 
-        ReportData IQuery.GetReportData(int reportId)
+        public ReportData GetReportData(int reportId)
         {
             using var db = GetSqlConnection();
-            
+
             var response = db.QueryFirst<ReportData>(@"SELECT Id,
                     NameBlockStatus,
                     NameBrand,
@@ -52,27 +52,28 @@ namespace Infrastructure
 
         public void InsertReportData(List<ReportData> reportDataList)
         {
-            using var db =  GetSqlConnection();
-            
+            using var db = GetSqlConnection();
+
+
             db.Open();
-            
+
             SqlTransaction transaction = db.BeginTransaction();
-                
+
             try
             {
                 foreach (var reportData in reportDataList)
                 {
-                    InsertBrand(reportData, db);
-                    InsertUnit(reportData, db);
-                    InsertStatusProduct(reportData, db);
-                    InsertSection(reportData, db);
-                    InsertProduct(reportData, db);
-                    InsertDepartment(reportData, db);
-                    var departmentProductId = InsertDepartmentProduct(reportData, db);
-                    InsertBlockStatus(reportData, db);
-                    InsertOrder(reportData, departmentProductId, db);
+                    ((IQuery)this).InsertBrand(reportData, db);
+                    ((IQuery)this).InsertUnit(reportData, db);
+                    ((IQuery)this).InsertStatusProduct(reportData, db);
+                    ((IQuery)this).InsertSection(reportData, db);
+                    ((IQuery)this).InsertProduct(reportData, db);
+                    ((IQuery)this).InsertDepartment(reportData, db);
+                    var departmentProductId = ((IQuery)this).InsertDepartmentProduct(reportData, db);
+                    ((IQuery)this).InsertBlockStatus(reportData, db);
+                    ((IQuery)this).InsertOrder(reportData, departmentProductId, db);
                 }
-                    
+
                 transaction.Commit();
             }
             catch
@@ -81,7 +82,7 @@ namespace Infrastructure
             }
         }
 
-        public void InsertBlockStatus(ReportData reportData, SqlConnection sqlConnection)
+        void IQuery.InsertBlockStatus(ReportData reportData, SqlConnection sqlConnection)
         {
             var BlockStatus = sqlConnection.Query<BlockStatus>(@"SELECT * 
                         FROM BlockStatus 
@@ -100,7 +101,7 @@ namespace Infrastructure
                 new {NameBlockStatus = reportData.NameBlockStatus});
         }
 
-        public void InsertBrand(ReportData reportData, SqlConnection sqlConnection)
+        void IQuery.InsertBrand(ReportData reportData, SqlConnection sqlConnection)
         {
             var Brand = sqlConnection.Query<Brand>(@"SELECT * 
                         FROM Brand 
@@ -119,8 +120,8 @@ namespace Infrastructure
                 new {NameBrand = reportData.NameBrand});
         }
 
-        public void InsertDepartment(ReportData reportData, SqlConnection sqlConnection)
-        {            
+        void IQuery.InsertDepartment(ReportData reportData, SqlConnection sqlConnection)
+        {
             var Department = sqlConnection.Query<Department>(@"SELECT * 
                         FROM Department 
                         WHERE NameDepartment = @NameDepartment",
@@ -138,7 +139,7 @@ namespace Infrastructure
                 new {NameDepartment = reportData.NameDepartment});
         }
 
-        public int InsertDepartmentProduct(ReportData reportData, SqlConnection sqlConnection)
+        int IQuery.InsertDepartmentProduct(ReportData reportData, SqlConnection sqlConnection)
         {
             var departmentProduct = new DepartmentProduct();
 
@@ -151,8 +152,8 @@ namespace Infrastructure
             departmentProduct.DepartmentId = sqlConnection.QueryFirst<int>(@"SELECT Id
                                     FROM Department
                                     WHERE NameDepartment = @NameDepartment",
-                new{NameDepartment = reportData.NameDepartment});
-                
+                new {NameDepartment = reportData.NameDepartment});
+
             departmentProduct.ProductId = sqlConnection.QueryFirst<int>(@"SELECT Id
                                     FROM Product
                                     WHERE NameProduct = @NameProduct 
@@ -193,9 +194,8 @@ namespace Infrastructure
             return DepartmentProductId;
         }
 
-        public void InsertOrder(ReportData reportData, int departmentProductId, SqlConnection sqlConnection)
+        void IQuery.InsertOrder(ReportData reportData, int departmentProductId, SqlConnection sqlConnection)
         {
-
             var order = new Order();
 
             order.SellingPrice = reportData.SellingPrice;
@@ -204,8 +204,8 @@ namespace Infrastructure
             order.BlockStatusId = sqlConnection.QueryFirst<int>(@"SELECT Id
                                     FROM BlockStatus
                                     WHERE NameBlockStatus = @NameBlockStatus",
-                new{NameBlockStatus = reportData.NameBlockStatus});
-                
+                new {NameBlockStatus = reportData.NameBlockStatus});
+
             sqlConnection.Execute(@"INSERT INTO [dbo].[Order]([DepartmentProductId],
                                                             [BlockStatusId],
                                                             [SellingPrice])
@@ -220,9 +220,8 @@ namespace Infrastructure
                 });
         }
 
-        public void InsertProduct(ReportData reportData, SqlConnection sqlConnection)
+        void IQuery.InsertProduct(ReportData reportData, SqlConnection sqlConnection)
         {
-
             var product = new Product();
 
             List<Product> duplicateProducts = new List<Product>();
@@ -242,6 +241,7 @@ namespace Infrastructure
             {
                 return;
             }
+
             product.Code = reportData.CodeProduct;
             product.Name = reportData.NameProduct;
             product.ExpirationDate = reportData.ExpirationDate;
@@ -291,10 +291,9 @@ namespace Infrastructure
                     ExpirationDate = product.ExpirationDate,
                     UnitId = product.UnitId
                 });
-            
         }
 
-        public void InsertSection(ReportData reportData, SqlConnection sqlConnection)
+        void IQuery.InsertSection(ReportData reportData, SqlConnection sqlConnection)
         {
             var Section = sqlConnection.Query<Section>(@"SELECT * 
                                     FROM Section 
@@ -306,14 +305,14 @@ namespace Infrastructure
                                                 VALUES (@NameSection);",
                     new {NameSection = reportData.NameSection});
             }
-            
+
             var IdSection = sqlConnection.Query<Section>(@"SELECT * 
                                     FROM Section 
                                     WHERE NameSection = @NameSection",
                 new {NameSection = reportData.NameSection});
         }
 
-        public void InsertStatusProduct(ReportData reportData, SqlConnection sqlConnection)
+        void IQuery.InsertStatusProduct(ReportData reportData, SqlConnection sqlConnection)
         {
             var StatusProduct = sqlConnection.Query<StatusProduct>(@"SELECT * 
                         FROM StatusProduct 
@@ -332,30 +331,31 @@ namespace Infrastructure
                 new {CodeStatusProduct = reportData.CodeStatusProduct});
         }
 
-        public void InsertUnit(ReportData reportData, SqlConnection sqlConnection)
-            {
-                using var db = GetSqlConnection();
-                
-                var Unit = db.Query<Unit>(@"SELECT * 
-                        FROM Unit 
-                        WHERE NameUnit = @NameUnit",
-                    new {NameUnit = reportData.NameUnit});
-                if (Unit.AsList().Count == 0)
-                {
-                    db.Execute(@"INSERT INTO [dbo].[Unit](NameUnit) 
-                                    VALUES (@NameUnit);",
-                        new {NameUnit = reportData.NameUnit});
-                }
-
-                var IdUnit = db.Query<Unit>(@"SELECT * 
-                        FROM Unit 
-                        WHERE NameUnit = @NameUnit",
-                    new {NameUnit = reportData.NameUnit});
-            }
-        List < ReportData > IQuery.GetReportData()
+        void IQuery.InsertUnit(ReportData reportData, SqlConnection sqlConnection)
         {
             using var db = GetSqlConnection();
-            
+
+            var Unit = db.Query<Unit>(@"SELECT * 
+                        FROM Unit 
+                        WHERE NameUnit = @NameUnit",
+                new {NameUnit = reportData.NameUnit});
+            if (Unit.AsList().Count == 0)
+            {
+                db.Execute(@"INSERT INTO [dbo].[Unit](NameUnit) 
+                                    VALUES (@NameUnit);",
+                    new {NameUnit = reportData.NameUnit});
+            }
+
+            var IdUnit = db.Query<Unit>(@"SELECT * 
+                        FROM Unit 
+                        WHERE NameUnit = @NameUnit",
+                new {NameUnit = reportData.NameUnit});
+        }
+
+        public List<ReportData> GetReportData()
+        {
+            using var db = GetSqlConnection();
+
             var response = db.Query<ReportData>(@"SELECT Id,
                      NameBlockStatus,
                      NameBrand,
@@ -376,5 +376,5 @@ namespace Infrastructure
 
             return response.ToList();
         }
-        }
     }
+}

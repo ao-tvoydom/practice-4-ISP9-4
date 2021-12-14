@@ -4,7 +4,7 @@ using Infrastructure.Model;
 
 namespace Infrastructure.Interfaces
 {
-    public interface IQuery
+    internal interface IQuery
     {
          List<ReportData> GetReportData();
 
