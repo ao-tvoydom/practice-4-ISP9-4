@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Data.SqlClient;
 using Infrastructure.Model;
 
 namespace Infrastructure.Interfaces
@@ -11,23 +12,23 @@ namespace Infrastructure.Interfaces
 
          void InsertReportData(List<ReportData> reportDataList);
          
-         void InsertBlockStatus(ReportData reportData);
+         void InsertBlockStatus(ReportData reportData, SqlConnection sqlConnection);
 
-         void InsertBrand(ReportData reportData);
+         void InsertBrand(ReportData reportData, SqlConnection sqlConnection);
          
-         void InsertDepartment(ReportData reportData);
+         void InsertDepartment(ReportData reportData, SqlConnection sqlConnection);
          
-         int InsertDepartmentProduct(ReportData reportData);
+         int InsertDepartmentProduct(ReportData reportData, SqlConnection sqlConnection);
          
-         void InsertOrder(ReportData reportData, int departmentProductId);
+         void InsertOrder(ReportData reportData, int departmentProductId, SqlConnection sqlConnection);
          
-         void InsertProduct(ReportData reportData);
+         void InsertProduct(ReportData reportData, SqlConnection sqlConnection);
          
-         void InsertSection(ReportData reportData);
+         void InsertSection(ReportData reportData, SqlConnection sqlConnection);
          
-         void InsertStatusProduct(ReportData reportData);
+         void InsertStatusProduct(ReportData reportData, SqlConnection sqlConnection);
          
-         void InsertUnit(ReportData reportData);
+         void InsertUnit(ReportData reportData, SqlConnection sqlConnection);
          
     }
 }
