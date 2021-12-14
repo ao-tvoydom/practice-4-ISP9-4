@@ -73,7 +73,7 @@ namespace Infrastructure
 
         public void InsertBlockStatus(ReportData reportData)
         {
-            BlockStatus blockStatus = new BlockStatus();
+            var blockStatus = new BlockStatus();
             using (var db =  GetSqlConnection())
             {
                 var BlockStatus = db.Query<BlockStatus>(@"SELECT * 
@@ -96,7 +96,7 @@ namespace Infrastructure
 
         public void InsertBrand(ReportData reportData)
         {
-            Brand brand = new Brand();
+            var brand = new Brand();
             using (var db =  GetSqlConnection())
             {
                 var Brand = db.Query<Brand>(@"SELECT * 
@@ -119,7 +119,7 @@ namespace Infrastructure
 
         public void InsertDepartment(ReportData reportData)
         {
-            Department department = new Department();
+            var department = new Department();
             using (var db = GetSqlConnection())
             {
                 var Department = db.Query<Department>(@"SELECT * 
@@ -142,7 +142,7 @@ namespace Infrastructure
 
         public int InsertDepartmentProduct(ReportData reportData)
         {
-            DepartmentProduct departmentProduct = new DepartmentProduct();
+            var departmentProduct = new DepartmentProduct();
             departmentProduct.Realization = reportData.Realization;
             departmentProduct.ProductDisposal = reportData.ProductDisposal;
             departmentProduct.ProductSurplus = reportData.ProductSurplus;
@@ -198,7 +198,7 @@ namespace Infrastructure
 
         public void InsertOrder(ReportData reportData, int departmentProductId)
         {
-            Order order = new Order();
+            var order = new Order();
             order.SellingPrice = reportData.SellingPrice;
             order.DepartmentProductId = departmentProductId;
             using (var db = GetSqlConnection())
@@ -225,7 +225,7 @@ namespace Infrastructure
 
         public void InsertProduct(ReportData reportData)
         {
-            Product product = new Product();
+            var product = new Product();
             List<Product> DublicateProducts = new List<Product>();
             using (var db = GetSqlConnection())
             {
@@ -298,7 +298,7 @@ namespace Infrastructure
 
         public void InsertSection(ReportData reportData)
         {
-            Section section = new Section();
+            var section = new Section();
             using (var db = GetSqlConnection())
                         {
                             var Section = db.Query<Section>(@"SELECT * 
@@ -344,7 +344,7 @@ namespace Infrastructure
 
         public void InsertUnit(ReportData reportData)
             {
-                Unit unit = new Unit();
+                var unit = new Unit();
                 using (var db = GetSqlConnection())
                 {
                     var Unit = db.Query<Unit>(@"SELECT * 
