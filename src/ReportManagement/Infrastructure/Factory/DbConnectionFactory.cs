@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlClient;
 using Infrastructure.Interfaces;
 
@@ -9,6 +8,8 @@ namespace Infrastructure.Factory
     public class DbConnectionFactory : IDBConnectionFactory
     {
         private readonly string _connectionString;
+        private IDbConnection? _dbConnection;
+        private readonly object _locker = new();
         
         public DbConnectionFactory(string connectionString)
         {
@@ -16,27 +17,30 @@ namespace Infrastructure.Factory
             {
                 throw new Exception("Пустая сторока подключения!");
             }
+            
             _connectionString = connectionString;
-        }
-
-        private string GetConnectionString()
-        {
-            return _connectionString;
         }
 
         public IDbConnection CreateSqlConnection()
         {
-            return CreateDbConnection(GetConnectionString());
+            if (_dbConnection == null)
+            {
+                lock (_locker)
+                {
+                    if (_dbConnection == null)
+                    {
+                        _dbConnection = new SqlConnection(_connectionString);
+                        _dbConnection.Open();
+                    }
+                }
+            }
+
+            return _dbConnection;
         }
-        
-        private IDbConnection CreateDbConnection(string connectionString)
+
+        public void Dispose()
         {
-            DbConnection connection;
-            
-            connection = new SqlConnection(); 
-            connection.ConnectionString = connectionString;
-            
-            return connection;
+            _dbConnection?.Dispose();
         }
     }
 }
