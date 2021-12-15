@@ -1,7 +1,11 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
+using DocumentFormat.OpenXml.CustomProperties;
+using Infrastructure;
+using Infrastructure.Excel;
 using Microsoft.Win32;
+using System.Configuration;
 
 namespace UILayer
 {
@@ -52,7 +56,7 @@ namespace UILayer
             var openFileDialog = new OpenFileDialog
             {
                 InitialDirectory = @"c:\",
-                Multiselect = true,
+                Multiselect = false,
                 DefaultExt = defExtension,
                 Filter = "xls files (*.xls)|*.xls|xlsx files (*.xlsx)|*.xlsx",
                 FilterIndex = 2,
@@ -64,6 +68,12 @@ namespace UILayer
                 if (result == true) // выполняется при нажатии ОК на выборе файлов
                 {
                     //openFileDialog.FileNames // массив с полными путями всех выбранных файлов
+                    var excelReportFileConverter = new ExcelReportFileConverter();
+                    var convertedForm = excelReportFileConverter.ConvertFrom(openFileDialog.FileName);
+                    var reportRepository = new ReportRepository(ConfigurationManager.ConnectionStrings["DatabaseEntities"].ConnectionString);
+                    reportRepository.Add(convertedForm);
+                    reportRepository.Dispose();
+                    MessageBox.Show("Готово");
                 }
                 else
                 {
