@@ -1,8 +1,9 @@
-﻿using System.Data;
+﻿using System;
+using System.Data;
 
 namespace Infrastructure.Interfaces
 {
-    public interface IDBConnectionFactory
+    public interface IDBConnectionFactory : IDisposable
     {
         IDbConnection CreateSqlConnection();
     }
