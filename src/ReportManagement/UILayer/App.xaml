@@ -4,6 +4,85 @@
              xmlns:local="clr-namespace:UILayer"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="Control.IsMouseOver" Value="True">
+                    <Setter Property="Control.FontWeight" Value="Medium" />
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="10"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="Green"
+                                BorderThickness="1">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+        </Style>
+        
+        <Style x:Key="ExitStyle" TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="Control.IsMouseOver" Value="True">
+                    <Setter Property="Control.FontWeight" Value="Bold" />
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Control.FontWeight" Value="Medium"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="10"
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                        </Border>
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <Style x:Key="OpenFileStyle" TargetType="Button">
+            <Style.Triggers>
+                <Trigger Property="Control.IsMouseOver" Value="True">
+                    <Setter Property="Control.FontWeight" Value="Medium" />
+                </Trigger>
+            </Style.Triggers>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="10"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="2">
+                            <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"/>
+                            <Border.BorderBrush>
+                                <DrawingBrush Viewport="0,0,8,8" ViewportUnits="Absolute" TileMode="Tile">
+                                    <DrawingBrush.Drawing>
+                                        <DrawingGroup>
+                                            <GeometryDrawing Brush="Green">
+                                                <GeometryDrawing.Geometry>
+                                                    <GeometryGroup>
+                                                        <RectangleGeometry Rect="0,0,50,50" />
+                                                        <RectangleGeometry Rect="50,50,50,50" />
+                                                    </GeometryGroup>
+                                                </GeometryDrawing.Geometry>
+                                            </GeometryDrawing>
+                                        </DrawingGroup>
+                                    </DrawingBrush.Drawing>
+                                </DrawingBrush>
+                            </Border.BorderBrush>
+                        </Border>
+                    </ControlTemplate>
+
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>
