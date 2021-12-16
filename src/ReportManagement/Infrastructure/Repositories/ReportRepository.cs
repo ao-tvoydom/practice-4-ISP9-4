@@ -12,11 +12,11 @@ namespace Infrastructure
 
     public class ReportRepository : IReportRepository
     {
-        private readonly DbConnectionFactory _dbConnectionFactory;
+        private readonly IDBConnectionFactory _dbConnectionFactory;
 
-        public ReportRepository(string connectionString)
+        public ReportRepository(IDBConnectionFactory dbConnectionFactory)
         {
-            _dbConnectionFactory = new DbConnectionFactory(connectionString);
+            _dbConnectionFactory = dbConnectionFactory;
         }
 
         public IReadOnlyCollection<ReportData> GetAll()

@@ -6,7 +6,9 @@ using Infrastructure;
 using Infrastructure.Excel;
 using System.Configuration;
 using DataProcessing.Interfaces;
+using DataProcessing.Services;
 using Infrastructure.Interfaces;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 
 namespace UILayer
@@ -16,23 +18,22 @@ namespace UILayer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private readonly ISourceReportFileConverter _reportFileConverter;
-        private readonly IReportRepository _reportRepository;
-        private readonly IDataProcessingService _dataProcessingService;
         
+        //private readonly IDataProcessingService _dataProcessingService;
+        private readonly IServiceProvider _dataProcessingService;
         
         private string[] _pathToFile = null!; 
         
         const string defExtension = "xls";
         
         public static MainWindow Window;
-        public MainWindow(ISourceReportFileConverter reportFileConverter, IReportRepository reportRepository, IDataProcessingService dataProcessingService)
+        public MainWindow(IServiceProvider dataProcessingService)
         {
             InitializeComponent();
             
-            _reportFileConverter = reportFileConverter;
-            _reportRepository = reportRepository;
+            //_dataProcessingService = dataProcessingService;
             _dataProcessingService = dataProcessingService;
+            
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -78,7 +79,16 @@ namespace UILayer
 
                 if (result == true) 
                 {
-                    _dataProcessingService.InsertReport(openFileDialog.FileName, _reportRepository, _reportFileConverter);
+
+                    using (var scope = _dataProcessingService.CreateScope())
+                    {
+                        var sp = scope.ServiceProvider;
+                        var dataProcessingService = sp.GetRequiredService<DataProcessingService>();
+                        dataProcessingService.ExportReportToDb(openFileDialog.FileName);
+                    }
+                    
+                    
+                    
                     
                     MessageBox.Show("Радость");
                 }

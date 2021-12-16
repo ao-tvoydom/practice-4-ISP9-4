@@ -14,7 +14,7 @@ using Infrastructure.Excel;
 using Infrastructure.Factory;
 using Infrastructure.Interfaces;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+
 
 namespace UILayer
 {
@@ -34,9 +34,10 @@ namespace UILayer
     
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddTransient<IReportRepository>(x => new ReportRepository(ConfigurationManager.ConnectionStrings["DatabaseEntities"].ConnectionString) );
-            services.AddSingleton<ISourceReportFileConverter>(new ExcelReportFileConverter());
-            services.AddTransient<IDataProcessingService>(x => new DataProcessingService());
+            
+            services.AddScoped<DataProcessingService, DataProcessingService>(x=> new DataProcessingService(new ReportRepository(new DbConnectionFactory()), new ExcelReportFileConverter()));
+            
+            
             services.AddSingleton<MainWindow>();
             
         }
