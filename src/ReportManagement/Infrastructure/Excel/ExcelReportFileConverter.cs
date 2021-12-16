@@ -43,8 +43,7 @@ namespace Infrastructure.Excel
                     {
                         var item = new ReportData();
                         var t = row.Cell(CodeProductRow).Value.ToString();
-                        if (row.Cell(CodeProductRow).Value.ToString() == String.Empty ||
-                            row.Cell(LastShipmentDateRow).Value.ToString() == "0")
+                        if (row.Cell(CodeProductRow).Value.ToString() == String.Empty)
                         {
                             continue;
                         }
