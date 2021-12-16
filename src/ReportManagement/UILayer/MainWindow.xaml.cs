@@ -4,8 +4,9 @@ using System.Windows.Input;
 using DocumentFormat.OpenXml.CustomProperties;
 using Infrastructure;
 using Infrastructure.Excel;
-using Microsoft.Win32;
 using System.Configuration;
+using Infrastructure.Interfaces;
+using Microsoft.Win32;
 
 namespace UILayer
 {
@@ -14,14 +15,21 @@ namespace UILayer
     /// </summary>
     public partial class MainWindow : Window
     {
+        private readonly ISourceReportFileConverter _reportFileConverter;
+        private readonly IReportRepository _reportRepository;
+        
+        
         private string[] _pathToFile = null!; 
         
         const string defExtension = "xls";
         
         public static MainWindow Window;
-        public MainWindow()
+        public MainWindow(ISourceReportFileConverter reportFileConverter, IReportRepository reportRepository)
         {
             InitializeComponent();
+            
+            _reportFileConverter = reportFileConverter;
+            _reportRepository = reportRepository;
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -68,12 +76,10 @@ namespace UILayer
                 if (result == true) // выполняется при нажатии ОК на выборе файлов
                 {
                     //openFileDialog.FileNames // массив с полными путями всех выбранных файлов
-                    var excelReportFileConverter = new ExcelReportFileConverter();
-                    var convertedForm = excelReportFileConverter.ConvertFrom(openFileDialog.FileName);
-                    var reportRepository = new ReportRepository(ConfigurationManager.ConnectionStrings["DatabaseEntities"].ConnectionString);
-                    reportRepository.Add(convertedForm);
-                    reportRepository.Dispose();
-                    MessageBox.Show("Готово");
+                    
+                    var convertedForm = _reportFileConverter.ConvertFrom(openFileDialog.FileName);
+                    _reportRepository.Add(convertedForm);
+                    MessageBox.Show("Радость");
                 }
                 else
                 {

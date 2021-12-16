@@ -4,7 +4,7 @@ using Infrastructure.Model;
 
 namespace Infrastructure.Interfaces
 {
-    internal interface IReportRepository : IDisposable
+    public interface IReportRepository : IDisposable
     {
         IReadOnlyCollection<ReportData> GetAll();
         ReportData GetById(int reportId);

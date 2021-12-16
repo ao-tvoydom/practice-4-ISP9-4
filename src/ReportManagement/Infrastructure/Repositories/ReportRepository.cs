@@ -89,7 +89,6 @@ namespace Infrastructure
                     InsertBlockStatus(reportData, db, transaction);
                     InsertOrder(reportData, departmentProductId, db, transaction);
                 }
-
                 transaction.Commit();
             }
             catch (Exception ex1)
@@ -105,6 +104,7 @@ namespace Infrastructure
 
                 throw;
             }
+            Dispose();
         }
 
         private SqlConnection GetSqlConnection()
