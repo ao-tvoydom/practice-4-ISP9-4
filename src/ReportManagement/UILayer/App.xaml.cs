@@ -6,6 +6,8 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
+using DataProcessing.Interfaces;
+using DataProcessing.Services;
 using DocumentFormat.OpenXml.Drawing.Charts;
 using Infrastructure;
 using Infrastructure.Excel;
@@ -34,7 +36,9 @@ namespace UILayer
         {
             services.AddTransient<IReportRepository>(x => new ReportRepository(ConfigurationManager.ConnectionStrings["DatabaseEntities"].ConnectionString) );
             services.AddSingleton<ISourceReportFileConverter>(new ExcelReportFileConverter());
+            services.AddTransient<IDataProcessingService>(x => new DataProcessingService());
             services.AddSingleton<MainWindow>();
+            
         }
     
         private void OnStartup(object sender, StartupEventArgs e)

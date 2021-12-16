@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.CustomProperties;
 using Infrastructure;
 using Infrastructure.Excel;
 using System.Configuration;
+using DataProcessing.Interfaces;
 using Infrastructure.Interfaces;
 using Microsoft.Win32;
 
@@ -17,6 +18,7 @@ namespace UILayer
     {
         private readonly ISourceReportFileConverter _reportFileConverter;
         private readonly IReportRepository _reportRepository;
+        private readonly IDataProcessingService _dataProcessingService;
         
         
         private string[] _pathToFile = null!; 
@@ -24,12 +26,13 @@ namespace UILayer
         const string defExtension = "xls";
         
         public static MainWindow Window;
-        public MainWindow(ISourceReportFileConverter reportFileConverter, IReportRepository reportRepository)
+        public MainWindow(ISourceReportFileConverter reportFileConverter, IReportRepository reportRepository, IDataProcessingService dataProcessingService)
         {
             InitializeComponent();
             
             _reportFileConverter = reportFileConverter;
             _reportRepository = reportRepository;
+            _dataProcessingService = dataProcessingService;
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -73,12 +76,10 @@ namespace UILayer
 
             bool? result = openFileDialog.ShowDialog();
 
-                if (result == true) // выполняется при нажатии ОК на выборе файлов
+                if (result == true) 
                 {
-                    //openFileDialog.FileNames // массив с полными путями всех выбранных файлов
+                    _dataProcessingService.InsertReport(openFileDialog.FileName, _reportRepository, _reportFileConverter);
                     
-                    var convertedForm = _reportFileConverter.ConvertFrom(openFileDialog.FileName);
-                    _reportRepository.Add(convertedForm);
                     MessageBox.Show("Радость");
                 }
                 else
