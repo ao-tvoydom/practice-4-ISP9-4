@@ -34,10 +34,12 @@ namespace UILayer
     
         private void ConfigureServices(IServiceCollection services)
         {
-            
-            services.AddScoped<DataProcessingService, DataProcessingService>(x=> new DataProcessingService(new ReportRepository(new DbConnectionFactory()), new ExcelReportFileConverter()));
-            
-            
+            services.AddScoped<IDBConnectionFactory,DbConnectionFactory>();
+            services.AddScoped<ISourceReportFileConverter, ExcelReportFileConverter>();
+            services.AddScoped<IReportRepository,ReportRepository>();
+            services.AddScoped<IDataProcessingService, DataProcessingService>();
+            services.AddScoped<IServiceScopeFactory,ServiceScopeFactory>();
+
             services.AddSingleton<MainWindow>();
             
         }

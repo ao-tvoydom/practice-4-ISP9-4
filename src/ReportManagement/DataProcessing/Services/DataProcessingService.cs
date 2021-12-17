@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace DataProcessing.Services
 {
-    public class DataProcessingService : IDataProcessingService, IServiceProvider
+    public class DataProcessingService : IDataProcessingService
     {
 
         private readonly ISourceReportFileConverter _reportFileConverter;
@@ -23,12 +23,6 @@ namespace DataProcessing.Services
             _reportRepository.Add(convertedForm);
         }
 
- 
-        public IServiceProvider ServiceProvider { get; }
-
-        public object? GetService(Type serviceType)
-        {
-            throw new NotImplementedException();
-        }
+        
     }
 }

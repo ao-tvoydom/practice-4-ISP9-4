@@ -19,21 +19,24 @@ namespace UILayer
     public partial class MainWindow : Window
     {
         
-        //private readonly IDataProcessingService _dataProcessingService;
-        private readonly IServiceProvider _dataProcessingService;
+        
+       
+        
+        private readonly IServiceScopeFactory _serviceScopeFactory;
+
         
         private string[] _pathToFile = null!; 
         
         const string defExtension = "xls";
         
         public static MainWindow Window;
-        public MainWindow(IServiceProvider dataProcessingService)
+        
+        public MainWindow( IServiceScopeFactory serviceScopeFactory)
         {
             InitializeComponent();
             
-            //_dataProcessingService = dataProcessingService;
-            _dataProcessingService = dataProcessingService;
-            
+            _serviceScopeFactory = serviceScopeFactory;
+
         }
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
@@ -80,15 +83,12 @@ namespace UILayer
                 if (result == true) 
                 {
 
-                    using (var scope = _dataProcessingService.CreateScope())
+                    using (var scope = _serviceScopeFactory.CreateScope())
                     {
                         var sp = scope.ServiceProvider;
-                        var dataProcessingService = sp.GetRequiredService<DataProcessingService>();
+                        var dataProcessingService = sp.GetRequiredService<IDataProcessingService>();
                         dataProcessingService.ExportReportToDb(openFileDialog.FileName);
                     }
-                    
-                    
-                    
                     
                     MessageBox.Show("Радость");
                 }
