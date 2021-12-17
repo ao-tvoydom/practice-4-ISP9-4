@@ -42,7 +42,7 @@ namespace Infrastructure.Excel
                     foreach (var row in sheet.Rows())
                     {
                         var item = new ReportData();
-                        var t = row.Cell(CodeProductRow).Value.ToString();
+                        
                         if (row.Cell(CodeProductRow).Value.ToString() == String.Empty)
                         {
                             continue;
@@ -89,7 +89,7 @@ namespace Infrastructure.Excel
             catch (Exception ex)
             {
                 throw;
-             }
+            }
 
             return list;
         }

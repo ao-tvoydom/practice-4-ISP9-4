@@ -18,18 +18,12 @@ namespace UILayer
     /// </summary>
     public partial class MainWindow : Window
     {
-        
-        
-       
-        
-        private readonly IServiceScopeFactory _serviceScopeFactory;
 
+        private readonly IServiceScopeFactory _serviceScopeFactory;
         
         private string[] _pathToFile = null!; 
         
         const string defExtension = "xls";
-        
-        public static MainWindow Window;
         
         public MainWindow( IServiceScopeFactory serviceScopeFactory)
         {
@@ -39,16 +33,11 @@ namespace UILayer
 
         }
 
-        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            Window = this;
-        }
-
         private void Drag(object sender, RoutedEventArgs e)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                MainWindow.Window.DragMove();
+                this.DragMove();
             }
         }
         
@@ -78,24 +67,20 @@ namespace UILayer
                 RestoreDirectory = true
             };
 
-            bool? result = openFileDialog.ShowDialog();
+            var result = openFileDialog.ShowDialog();
 
-                if (result == true) 
-                {
+            if (result != true) return;
+            
+            using (var scope = _serviceScopeFactory.CreateScope())
+            {
+                var sp = scope.ServiceProvider;
+                var dataProcessingService = sp.GetRequiredService<IDataProcessingService>();
+                dataProcessingService.ExportReportToDb(openFileDialog.FileName);
+            }
 
-                    using (var scope = _serviceScopeFactory.CreateScope())
-                    {
-                        var sp = scope.ServiceProvider;
-                        var dataProcessingService = sp.GetRequiredService<IDataProcessingService>();
-                        dataProcessingService.ExportReportToDb(openFileDialog.FileName);
-                    }
-                    
-                    MessageBox.Show("Радость");
-                }
-                else
-                {
-                    MessageBox.Show("Файлы не выбраны");
-                }
+            MessageBox.Show("Данные успешно загружены в базу данных","Успех",MessageBoxButton.OK,MessageBoxImage.Information);
+
+
         }
         private void Exit_OnClick(object sender, RoutedEventArgs e)
         {
