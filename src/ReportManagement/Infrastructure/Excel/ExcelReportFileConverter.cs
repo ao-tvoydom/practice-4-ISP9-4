@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using Infrastructure.Interfaces;
 using Infrastructure.Model;
 
@@ -96,7 +98,42 @@ namespace Infrastructure.Excel
 
         public void ConvertTo(string path, IReadOnlyCollection<ReportData> data)
         {
-            throw new System.NotImplementedException();
+            var excelData = from p in data 
+                select new { p.NameDepartment, 
+                    p.NameSection, 
+                    p.CodeProduct,
+                    p.NameProduct,
+                    p.NameBrand,
+                    p.NameBlockStatus,
+                    p.CodeStatusProduct,
+                    p.NameUnit,
+                    p.SellingPrice,
+                    p.Realization,
+                    p.ProductDisposal,
+                    p.ProductSurplus,
+                    p.LastShipmentDate,
+                    p.LastSaleDate,
+                    p.ExpirationDate };
+            var wb = new XLWorkbook();
+            var ws = wb.Worksheets.Add("Inserting Data");
+
+            ws.Cell(1, 1).Value = "Подразделения";
+            ws.Cell(1, 2).Value = "Наименование секции";
+            ws.Cell(1, 3).Value = "Код товара";
+            ws.Cell(1, 4).Value = "Наименование товара";
+            ws.Cell(1, 5).Value = "Бренд";
+            ws.Cell(1, 6).Value = "КИП";
+            ws.Cell(1, 7).Value = "Статус товара";
+            ws.Cell(1, 8).Value = "ЕИ";
+            ws.Cell(1, 9).Value = "Продаж. цена";
+            ws.Cell(1, 10).Value = "Торг. реал-ция / Кол-во";
+            ws.Cell(1, 11).Value = "Неторг. выбытие / Кол-во";
+            ws.Cell(1, 12).Value = "Исх. остаток / Кол-во";
+            ws.Cell(1, 13).Value = "[Последняя поставка]";
+            ws.Cell(1, 14).Value = "Дата последней продажи";
+            ws.Cell(1, 15).Value = "[Срок годности в днях]";
+            ws.Cell(2, 1).InsertData(excelData);
+            wb.SaveAs(path);
         }
     }
 }
