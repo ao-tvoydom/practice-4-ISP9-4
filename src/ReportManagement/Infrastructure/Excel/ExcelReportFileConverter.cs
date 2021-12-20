@@ -59,22 +59,22 @@ namespace Infrastructure.Excel
                         
                         if (row.Cell(LastSaleDateRow).Value.ToString() == "0")
                         {
-                            item.LastSaleDate = new DateOnly(2000, 01, 01);
+                            item.LastSaleDate = new DateTime(2000, 01, 01);
                         }
                         else
                         {
                             item.LastSaleDate =
-                                DateOnly.FromDateTime(Convert.ToDateTime(row.Cell(LastSaleDateRow).Value));
+                                Convert.ToDateTime(row.Cell(LastSaleDateRow).Value);
                         }
                         
                         if (row.Cell(LastShipmentDateRow).Value.ToString() == "0")
                         {
-                            item.LastShipmentDate = new DateOnly(2000, 01, 01);
+                            item.LastShipmentDate = new DateTime(2000, 01, 01);
                         }
                         else
                         {
                             item.LastShipmentDate =
-                                DateOnly.FromDateTime(Convert.ToDateTime(row.Cell(LastShipmentDateRow).Value));
+                                Convert.ToDateTime(row.Cell(LastShipmentDateRow).Value);
                         }
 
                         item.SellingPrice = Convert.ToDecimal(row.Cell(SellingPriceRow).Value);

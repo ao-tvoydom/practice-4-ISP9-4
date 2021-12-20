@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.CustomProperties;
 using Infrastructure;
 using Infrastructure.Excel;
 using System.Configuration;
+using System.IO;
 using DataProcessing.Interfaces;
 using DataProcessing.Services;
 using Infrastructure.Interfaces;
@@ -43,16 +44,26 @@ namespace UILayer
         
         private void CreateReport_OnClick(object sender, RoutedEventArgs e)
         {
-            if (_pathToFile == null)
+            
+            var saveFileDialog = new SaveFileDialog
             {
-                MessageBox.Show("Выберите файлы");
-            }
-            else
+                FileName = "ExcelReport"
+            };
+
+            var result = saveFileDialog.ShowDialog();
+   
+            if (result != true) return;
+
+            var savePath = Path.GetDirectoryName(saveFileDialog.FileName);
+            
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                ResultWindow resultWindow = new ResultWindow();
-                resultWindow.Show();
-                this.Close();
+                var sp = scope.ServiceProvider;
+                var dataProcessingService = sp.GetRequiredService<IDataProcessingService>();
+                dataProcessingService.ImportReportToExcel(savePath!);
             }
+            
+            
         }
         
         private void ImportFile_OnClick(object sender, RoutedEventArgs e)

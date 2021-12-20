@@ -23,7 +23,7 @@ namespace Infrastructure
         {
             var db = GetSqlConnection();
 
-            var response = db.Query<ReportData>(@"SELECT Id,
+            var response = db.Query<ReportData>(@"SELECT 
                      NameBlockStatus,
                      NameBrand,
                      NameDepartment,
@@ -39,7 +39,8 @@ namespace Infrastructure
                      CodeProduct,
                      NameProduct,
                      ExpirationDate
-                     FROM [dbo].[MainView]");
+                     FROM [dbo].[MainView]"
+            );
 
             return response.ToList();
         }
@@ -214,8 +215,8 @@ namespace Infrastructure
                     Realization = departmentProduct.Realization,
                     ProductDisposal = departmentProduct.ProductDisposal,
                     ProductSurplus = departmentProduct.ProductSurplus,
-                    LastShipmentDate = departmentProduct.LastShipmentDate.ToDateTime(TimeOnly.Parse("00:00 AM")),
-                    LastSaleDate = departmentProduct.LastSaleDate.ToDateTime(TimeOnly.Parse("00:00 AM"))
+                    LastShipmentDate = departmentProduct.LastShipmentDate,
+                    LastSaleDate = departmentProduct.LastSaleDate
                 }, transaction);
             int departmentProductId = sqlConnection.QueryFirst<int>(@"SELECT Id
                                     FROM DepartmentProduct

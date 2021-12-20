@@ -16,9 +16,9 @@ namespace Infrastructure.Model
         
         public decimal ProductSurplus { get; set; }
         
-        public DateOnly LastShipmentDate { get; set; }
+        public DateTime LastShipmentDate { get; set; }
         
-        public DateOnly LastSaleDate { get; set; }
+        public DateTime LastSaleDate { get; set; }
         
     }
 }
