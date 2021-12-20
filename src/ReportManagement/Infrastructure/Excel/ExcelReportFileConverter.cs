@@ -132,6 +132,7 @@ namespace Infrastructure.Excel
             ws.Cell(1, 13).Value = "[Последняя поставка]";
             ws.Cell(1, 14).Value = "Дата последней продажи";
             ws.Cell(1, 15).Value = "[Срок годности в днях]";
+            ws.Cell(2, 1).InsertData(excelData);
             wb.SaveAs(path);
         }
     }
