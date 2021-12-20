@@ -47,7 +47,12 @@ namespace UILayer
             
             var saveFileDialog = new SaveFileDialog
             {
-                FileName = "ExcelReport"
+                FileName = "ExcelReport.xlsx",
+                DefaultExt = defExtension,
+                AddExtension = true,
+                Filter = "xls files (*.xls)|*.xls|xlsx files (*.xlsx)|*.xlsx",
+                InitialDirectory = @"c:\"
+                
             };
 
             var result = saveFileDialog.ShowDialog();
