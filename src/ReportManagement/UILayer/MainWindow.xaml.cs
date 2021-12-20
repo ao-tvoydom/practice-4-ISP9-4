@@ -47,7 +47,7 @@ namespace UILayer
             
             var saveFileDialog = new SaveFileDialog
             {
-                FileName = "ExcelReport.xlsx",
+                FileName = "ExcelReport.xlsm",
                 DefaultExt = defExtension,
                 AddExtension = true,
                 Filter = "xls files (*.xls)|*.xls|xlsx files (*.xlsx)|*.xlsx",
@@ -59,7 +59,7 @@ namespace UILayer
    
             if (result != true) return;
 
-            var savePath = Path.GetDirectoryName(saveFileDialog.FileName);
+            var savePath = saveFileDialog.FileName;
             
             using (var scope = _serviceScopeFactory.CreateScope())
             {
@@ -67,6 +67,8 @@ namespace UILayer
                 var dataProcessingService = sp.GetRequiredService<IDataProcessingService>();
                 dataProcessingService.ImportReportToExcel(savePath!);
             }
+            
+            MessageBox.Show("Отчёт создан","Успех",MessageBoxButton.OK,MessageBoxImage.Information);
             
             
         }
