@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:UILayer"
         mc:Ignorable="d"
         Title="MainWindow" 
-        Loaded="MainWindow_OnLoaded"
+        
         Height="300" 
         Width="500"
         WindowStartupLocation="CenterScreen" 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using Infrastructure.Interfaces;
@@ -11,8 +12,10 @@ namespace Infrastructure.Factory
         private IDbConnection? _dbConnection;
         private readonly object _locker = new();
         
-        public DbConnectionFactory(string connectionString)
+        public DbConnectionFactory()
         {
+            var connectionString = ConfigurationManager.ConnectionStrings["DatabaseEntities"].ConnectionString;
+            
             if (String.IsNullOrWhiteSpace(connectionString))
             {
                 throw new Exception("Пустая сторока подключения!");
