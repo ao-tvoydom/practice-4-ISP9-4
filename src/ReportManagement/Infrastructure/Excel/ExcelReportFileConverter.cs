@@ -17,7 +17,7 @@ namespace Infrastructure.Excel
         const int ProductNameRow = 3;
         const int BrandNameRow = 4;
         const int RealizationQuantityRow = 5;
-        const int ReakizationSumRow = 6;
+        const int RealizationSumRow = 6;
         const int SurplusQuantityRow = 7;   
 
         public IReadOnlyCollection<ReportData> ConvertFrom(string path)
@@ -47,7 +47,7 @@ namespace Infrastructure.Excel
                         item.ProductName = row.Cell(ProductNameRow).Value.ToString();
                         item.BrandName = row.Cell(BrandNameRow).Value.ToString();
                         item.RealizationQuantity = Convert.ToDecimal(row.Cell(RealizationQuantityRow).Value);                        
-                        item.RealizationSum = Convert.ToDecimal(row.Cell(ReakizationSumRow).Value);
+                        item.RealizationSum = Convert.ToDecimal(row.Cell(RealizationSumRow).Value);
                         item.SurplusQuantity = Convert.ToDecimal(row.Cell(SurplusQuantityRow).Value.ToString());                       
                         list.Add(item);
                     }
