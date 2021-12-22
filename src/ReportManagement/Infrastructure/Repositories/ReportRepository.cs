@@ -127,7 +127,7 @@ namespace Infrastructure
             var idDepartment = sqlConnection.Query<Department>(@"SELECT * 
                         FROM Department 
                         WHERE DepartmentName = @DepartmentName",
-                new {NameDepartment = reportData.DepartmentName}, transaction);
+                new {DepartmentName = reportData.DepartmentName}, transaction);
         }
 
         private void InsertSale(ReportData reportData, SqlConnection sqlConnection, SqlTransaction transaction)
@@ -143,7 +143,7 @@ namespace Infrastructure
                                     WHERE DepartmentName = @DepartmentName",
                 new {DepartmentName = reportData.DepartmentName}, transaction);
             
-            sale.ProductID = sqlConnection.QueryFirst<int>(@"SELECT DepartmentID
+            sale.ProductID = sqlConnection.QueryFirst<int>(@"SELECT ProductID
                                     FROM Product
                                     WHERE ProductName = @ProductName",
                 new {ProductName = reportData.ProductName}, transaction);
@@ -206,8 +206,8 @@ namespace Infrastructure
                                                             @BrandID);",
                 new
                 {
-                    CodeProduct = product.Code,
-                    NameProduct = product.Name,
+                    ProductCode = product.Code,
+                    ProductName = product.Name,
                     BrandID = product.BrandID,
                 }, transaction);
         }
