@@ -31,7 +31,8 @@ namespace Infrastructure
                      SurplusQuantity,
                      ProductCode,
                      ProductName
-                     FROM [dbo].[MainView]"
+                     FROM [dbo].[MainView]
+                     ORDER BY ProductCode"
             );
 
             return response.ToList();

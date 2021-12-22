@@ -70,28 +70,37 @@ namespace Infrastructure.Excel
                     p.BrandName,
                     p.RealizationQuantity,
                     p.RealizationSum,
-                    p.SurplusQuantity,
-                            };
+                    p.SurplusQuantity};
             var wb = new XLWorkbook();
             var ws = wb.Worksheets.Add("Report");
+
+
+            ws.Cell(1, 1).Value = "Подразделения";
+            ws.Cell(1, 2).Value = "Код товара";
+            ws.Cell(1, 3).Value = "Наименование товара";
+            ws.Cell(1, 4).Value = "Бренд";
+            ws.Cell(1, 5).Value = "Сумма по полю Торг. реал-ция / Кол-во";
+            ws.Cell(1, 6).Value = "Сумма по полю Торг. реал-ция / Сумма продажи";
+            ws.Cell(1, 7).Value = "Сумма по полю Исх. остаток / Кол-во";
             ws.Cell(2, 1).InsertData(excelData);
             
             wb.AddPivotTableSheet();
+            //wb.AddResultSheet();
             
             wb.SaveAs(path);
         }
         public static void Coloring(string path, IReadOnlyCollection<ReportData> data)
         {
            var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Inserting Data");          
-            //ws.Column("J").Sort(XLSortOrder.Descending);
-            ws.Range("d2", "f1230").Style.Fill.BackgroundColor = XLColor.Yellow;
-            ws.Range("j2", "l1230").Style.Fill.BackgroundColor = XLColor.Yellow;
+           var ws = wb.Worksheets.Add("Inserting Data");          
+           ws.Column("J").Sort(XLSortOrder.Descending);
+           ws.Range("d2", "f1230").Style.Fill.BackgroundColor = XLColor.Yellow;
+           ws.Range("j2", "l1230").Style.Fill.BackgroundColor = XLColor.Yellow;
            ws.Range("p2", "r1230").Style.Fill.BackgroundColor = XLColor.Yellow;
-            ws.Range("d1231", "r1231").Style.Fill.BackgroundColor = XLColor.Red;
-            ws.Range("d1232", "f1233").Style.Fill.BackgroundColor = XLColor.Yellow;
-            ws.Range("j1232", "l1233").Style.Fill.BackgroundColor = XLColor.Yellow;
-            ws.Range("p1232", "r1233").Style.Fill.BackgroundColor = XLColor.Yellow;
+           ws.Range("d1231", "r1231").Style.Fill.BackgroundColor = XLColor.Red;
+           ws.Range("d1232", "f1233").Style.Fill.BackgroundColor = XLColor.Yellow;
+           ws.Range("j1232", "l1233").Style.Fill.BackgroundColor = XLColor.Yellow;
+           ws.Range("p1232", "r1233").Style.Fill.BackgroundColor = XLColor.Yellow;
         }
     }
 }
