@@ -24,21 +24,13 @@ namespace Infrastructure
             var db = GetSqlConnection();
 
             var response = db.Query<ReportData>(@"SELECT 
-                     NameBlockStatus,
-                     NameBrand,
-                     NameDepartment,
-                     Realization,
-                     ProductDisposal,
-                     ProductSurplus,
-                     LastShipmentDate,
-                     LastSaleDate,
-                     SellingPrice,
-                     NameUnit,
-                     CodeStatusProduct,
-                     NameSection,
-                     CodeProduct,
-                     NameProduct,
-                     ExpirationDate
+                     BrandName,
+                     DepartmentName,
+                     RealizationQuantity,
+                     RealizationSum,
+                     SurplusQuantity,
+                     ProductCode,
+                     ProductName
                      FROM [dbo].[MainView]"
             );
 
@@ -49,21 +41,13 @@ namespace Infrastructure
         {
             var db = GetSqlConnection();
             var response = db.QueryFirst<ReportData>(@"SELECT Id,
-                    NameBlockStatus,
-                    NameBrand,
-                    NameDepartment,
-                    Realization,
-                    ProductDisposal,
-                    ProductSurplus,
-                    LastShipmentDate,
-                    LastSaleDate,
-                    SellingPrice,
-                    NameUnit,
-                    CodeStatusProduct,
-                    NameSection,
-                    CodeProduct,
-                    NameProduct,
-                    ExpirationDate 
+                    BrandName,
+                    DepartmentName,
+                    RealizationQuantity,
+                    RealizationSum,
+                    SurplusQuantity,
+                    ProductCode,
+                    ProductName 
                     FROM [dbo].[MainView] 
                     Where Id = @Id",
                 new {Id = reportId});
@@ -81,14 +65,9 @@ namespace Infrastructure
                 foreach (var reportData in reportDataList)
                 {
                     InsertBrand(reportData, db, transaction);
-                    InsertUnit(reportData, db, transaction);
-                    InsertStatusProduct(reportData, db, transaction);
-                    InsertSection(reportData, db, transaction);
                     InsertProduct(reportData, db, transaction);
                     InsertDepartment(reportData, db, transaction);
-                    var departmentProductId = InsertDepartmentProduct(reportData, db, transaction);
-                    InsertBlockStatus(reportData, db, transaction);
-                    InsertOrder(reportData, departmentProductId, db, transaction);
+                    InsertSale(reportData, db, transaction);
                 }
                 transaction.Commit();
             }
@@ -112,142 +91,80 @@ namespace Infrastructure
         {
             return (SqlConnection) _dbConnectionFactory.CreateSqlConnection();
         }
-
-        private void InsertBlockStatus(ReportData reportData, SqlConnection sqlConnection, SqlTransaction transaction)
-        {
-            var blockStatus = sqlConnection.Query<BlockStatus>(@"SELECT * 
-                        FROM BlockStatus 
-                        WHERE NameBlockStatus = @NameBlockStatus",
-                new {NameBlockStatus = reportData.NameBlockStatus}, transaction);
-            if (blockStatus.AsList().Count == 0)
-            {
-                sqlConnection.Execute(@"INSERT INTO [dbo].[BlockStatus](NameBlockStatus) 
-                                    VALUES (@NameBlockStatus);",
-                    new {NameBlockStatus = reportData.NameBlockStatus}, transaction);
-            }
-
-            var idBlockStatus = sqlConnection.Query<BlockStatus>(@"SELECT * 
-                        FROM BlockStatus 
-                        WHERE NameBlockStatus = @NameBlockStatus",
-                new {NameBlockStatus = reportData.NameBlockStatus}, transaction);
-        }
-
+        
         private void InsertBrand(ReportData reportData, SqlConnection sqlConnection, SqlTransaction transaction)
         {
             var brand = sqlConnection.Query<Brand>(@"SELECT * 
                         FROM Brand 
-                        WHERE NameBrand = @NameBrand",
-                new {NameBrand = reportData.NameBrand}, transaction);
+                        WHERE BrandName = @BrandName",
+                new {BrandName = reportData.BrandName}, transaction);
             if (brand.AsList().Count == 0)
             {
-                sqlConnection.Execute(@"INSERT INTO [dbo].[Brand](NameBrand) 
-                                    VALUES (@NameBrand);",
-                    new {NameBrand = reportData.NameBrand}, transaction);
+                sqlConnection.Execute(@"INSERT INTO [dbo].[Brand](BrandName) 
+                                    VALUES (@BrandName);",
+                    new {BrandName = reportData.BrandName}, transaction);
             }
 
             var idBrand = sqlConnection.Query<Brand>(@"SELECT * 
                         FROM Brand 
-                        WHERE NameBrand = @NameBrand",
-                new {NameBrand = reportData.NameBrand}, transaction);
+                        WHERE BrandName = @BrandName",
+                new {BrandName = reportData.BrandName}, transaction);
         }
 
         private void InsertDepartment(ReportData reportData, SqlConnection sqlConnection,  SqlTransaction transaction)
         {
             var department = sqlConnection.Query<Department>(@"SELECT * 
                         FROM Department 
-                        WHERE NameDepartment = @NameDepartment",
-                new {NameDepartment = reportData.NameDepartment}, transaction);
+                        WHERE DepartmentName = @DepartmentName",
+                new {DepartmentName = reportData.DepartmentName}, transaction);
             if (department.AsList().Count == 0)
             {
-                sqlConnection.Execute(@"INSERT INTO [dbo].[Department](NameDepartment) 
-                                    VALUES (@NameDepartment);",
-                    new {NameDepartment = reportData.NameDepartment}, transaction);
+                sqlConnection.Execute(@"INSERT INTO [dbo].[Department](DepartmentName) 
+                                    VALUES (@DepartmentName);",
+                    new {DepartmentName = reportData.DepartmentName}, transaction);
             }
 
             var idDepartment = sqlConnection.Query<Department>(@"SELECT * 
                         FROM Department 
-                        WHERE NameDepartment = @NameDepartment",
-                new {NameDepartment = reportData.NameDepartment}, transaction);
+                        WHERE DepartmentName = @DepartmentName",
+                new {NameDepartment = reportData.DepartmentName}, transaction);
         }
 
-        private int InsertDepartmentProduct(ReportData reportData, SqlConnection sqlConnection, SqlTransaction transaction)
+        private void InsertSale(ReportData reportData, SqlConnection sqlConnection, SqlTransaction transaction)
         {
-            var departmentProduct = new DepartmentProduct();
+            var sale = new Sale();
 
-            departmentProduct.Realization = reportData.Realization;
-            departmentProduct.ProductDisposal = reportData.ProductDisposal;
-            departmentProduct.ProductSurplus = reportData.ProductSurplus;
-            departmentProduct.LastSaleDate = reportData.LastSaleDate;
-            departmentProduct.LastShipmentDate = reportData.LastShipmentDate;
+            sale.RealizationQuantity = reportData.RealizationQuantity;
+            sale.RealizationSum = reportData.RealizationSum;
+            sale.SurplusQuantity = reportData.SurplusQuantity;
 
-            departmentProduct.DepartmentId = sqlConnection.QueryFirst<int>(@"SELECT Id
+            sale.DepartmentID = sqlConnection.QueryFirst<int>(@"SELECT DepartmentID
                                     FROM Department
-                                    WHERE NameDepartment = @NameDepartment",
-                new {NameDepartment = reportData.NameDepartment}, transaction);
-
-            departmentProduct.ProductId = sqlConnection.QueryFirst<int>(@"SELECT Id
+                                    WHERE DepartmentName = @DepartmentName",
+                new {DepartmentName = reportData.DepartmentName}, transaction);
+            
+            sale.ProductID = sqlConnection.QueryFirst<int>(@"SELECT DepartmentID
                                     FROM Product
-                                    WHERE NameProduct = @NameProduct 
-                                    AND CodeProduct = @CodeProduct",
+                                    WHERE ProductName = @ProductName",
+                new {ProductName = reportData.ProductName}, transaction);
+
+            sqlConnection.Execute(@"INSERT INTO [dbo].[Sale]([DepartmentID],
+                                                            [ProductID],
+                                                            [RealizationQuantity],
+                                                            [RealizationSum],
+                                                            [SurplusQuantity])
+                                                    VALUES (@DepartmentID,
+                                                            @ProductID,
+                                                            @RealizationQuantity,
+                                                            @RealizationSum,
+                                                            @SurplusQuantity);",
                 new
                 {
-                    NameProduct = reportData.NameProduct,
-                    CodeProduct = reportData.CodeProduct
-                }, transaction);
-            sqlConnection.Execute(@"INSERT INTO [dbo].[DepartmentProduct]([DepartmentId],
-                                                            [ProductId],
-                                                            [Realization],
-                                                            [ProductDisposal],
-                                                            [ProductSurplus],
-                                                            [LastShipmentDate],
-                                                            [LastSaleDate]) 
-                                                     VALUES (@DepartmentId,
-                                                            @ProductId,
-                                                            @Realization,
-                                                            @ProductDisposal,
-                                                            @ProductSurplus,
-                                                            @LastShipmentDate,
-                                                            @LastSaleDate);",
-                new
-                {
-                    DepartmentId = departmentProduct.DepartmentId,
-                    ProductId = departmentProduct.ProductId,
-                    Realization = departmentProduct.Realization,
-                    ProductDisposal = departmentProduct.ProductDisposal,
-                    ProductSurplus = departmentProduct.ProductSurplus,
-                    LastShipmentDate = departmentProduct.LastShipmentDate,
-                    LastSaleDate = departmentProduct.LastSaleDate
-                }, transaction);
-            int departmentProductId = sqlConnection.QueryFirst<int>(@"SELECT Id
-                                    FROM DepartmentProduct
-                                    ORDER BY Id DESC", transaction: transaction);
-
-            return departmentProductId;
-        }
-
-        private void InsertOrder(ReportData reportData, int departmentProductId, SqlConnection sqlConnection, SqlTransaction transaction)
-        {
-            var order = new Order();
-
-            order.SellingPrice = reportData.SellingPrice;
-            order.DepartmentProductId = departmentProductId;
-
-            order.BlockStatusId = sqlConnection.QueryFirst<int>(@"SELECT Id
-                                    FROM BlockStatus
-                                    WHERE NameBlockStatus = @NameBlockStatus",
-                new {NameBlockStatus = reportData.NameBlockStatus}, transaction);
-
-            sqlConnection.Execute(@"INSERT INTO [dbo].[Order]([DepartmentProductId],
-                                                            [BlockStatusId],
-                                                            [SellingPrice])
-                                                    VALUES (@DepartmentProductId,
-                                                            @BlockStatusId,
-                                                            @SellingPrice);",
-                new
-                {
-                    DepartmentProductId = order.DepartmentProductId,
-                    BlockStatusId = order.BlockStatusId,
-                    SellingPrice = order.SellingPrice,
+                    DepartmentID = sale.DepartmentID,
+                    ProductID = sale.ProductID,
+                    RealizationQuantity = sale.RealizationQuantity,
+                    RealizationSum = sale.RealizationSum,
+                    SurplusQuantity = sale.SurplusQuantity,
                 }, transaction);
         }
 
@@ -255,17 +172,17 @@ namespace Infrastructure
         {
             var product = new Product();
 
-            List<Product> duplicateProducts = new List<Product>();
+            var duplicateProducts = new List<Product>();
 
 
             duplicateProducts.AddRange(sqlConnection.Query<Product>(@"SELECT *
                                     FROM Product
-                                    WHERE CodeProduct = @CodeProduct
-                                    AND NameProduct = @NameProduct",
+                                    WHERE ProductCode = @ProductCode
+                                    AND ProductName = @ProductName",
                 new
                 {
-                    CodeProduct = reportData.CodeProduct,
-                    NameProduct = reportData.NameProduct
+                    ProductCode = reportData.ProductCode,
+                    ProductName = reportData.ProductName
                 }, transaction));
 
             if (duplicateProducts.Count != 0)
@@ -273,114 +190,26 @@ namespace Infrastructure
                 return;
             }
 
-            product.Code = reportData.CodeProduct;
-            product.Name = reportData.NameProduct;
-            product.ExpirationDate = reportData.ExpirationDate;
+            product.Code = reportData.ProductCode;
+            product.Name = reportData.ProductName;
 
-
-            product.BrandId = sqlConnection.QueryFirst<int>(@"SELECT Id
+            product.BrandID = sqlConnection.QueryFirst<int>(@"SELECT BrandID
                                     FROM Brand
-                                    WHERE NameBrand = @NameBrand",
-                new {NameBrand = reportData.NameBrand}, transaction);
+                                    WHERE BrandName = @BrandName",
+                new {BrandName = reportData.BrandName}, transaction);
 
-            product.StatusProductId = sqlConnection.QueryFirst<int>(@"SELECT Id
-                                    FROM StatusProduct
-                                    WHERE CodeStatusProduct = @CodeStatusProduct",
-                new {CodeStatusProduct = reportData.CodeStatusProduct}, transaction);
-
-            product.SectionId = sqlConnection.QueryFirst<int>(@"SELECT Id
-                                    FROM Section
-                                    WHERE NameSection = @NameSection",
-                new {NameSection = reportData.NameSection}, transaction);
-
-            product.UnitId = sqlConnection.QueryFirst<int>(@"SELECT Id
-                                    FROM Unit
-                                    WHERE NameUnit = @NameUnit",
-                new {NameUnit = reportData.NameUnit}, transaction);
-
-            sqlConnection.Execute(@"INSERT INTO [dbo].[Product]([CodeProduct],
-                                                            [NameProduct],
-                                                            [BrandId],
-                                                            [StatusProductId],
-                                                            [SectionId],
-                                                            [ExpirationDate],
-                                                            [UnitId])
-                                                    VALUES (@CodeProduct,
-                                                            @NameProduct,
-                                                            @BrandId,
-                                                            @StatusProductId,
-                                                            @SectionId,
-                                                            @ExpirationDate,
-                                                            @UnitId);",
+            sqlConnection.Execute(@"INSERT INTO [dbo].[Product]([ProductCode],
+                                                            [ProductName],
+                                                            [BrandID])
+                                                    VALUES (@ProductCode,
+                                                            @ProductName,
+                                                            @BrandID);",
                 new
                 {
                     CodeProduct = product.Code,
                     NameProduct = product.Name,
-                    BrandId = product.BrandId,
-                    StatusProductId = product.StatusProductId,
-                    SectionId = product.SectionId,
-                    ExpirationDate = product.ExpirationDate,
-                    UnitId = product.UnitId
+                    BrandID = product.BrandID,
                 }, transaction);
-        }
-
-        private void InsertSection(ReportData reportData, SqlConnection sqlConnection, SqlTransaction transaction)
-        {
-            var section = sqlConnection.Query<Section>(@"SELECT * 
-                                    FROM Section 
-                                    WHERE NameSection = @NameSection",
-                new {NameSection = reportData.NameSection}, transaction);
-            if (section.AsList().Count == 0)
-            {
-                sqlConnection.Execute(@"INSERT INTO [dbo].[Section](NameSection) 
-                                                VALUES (@NameSection);",
-                    new {NameSection = reportData.NameSection}, transaction);
-            }
-
-            var idSection = sqlConnection.Query<Section>(@"SELECT * 
-                                    FROM Section 
-                                    WHERE NameSection = @NameSection",
-                new {NameSection = reportData.NameSection}, transaction);
-        }
-
-        private void InsertStatusProduct(ReportData reportData, SqlConnection sqlConnection, SqlTransaction transaction)
-        {
-            var statusProduct = sqlConnection.Query<StatusProduct>(@"SELECT * 
-                        FROM StatusProduct 
-                        WHERE CodeStatusProduct = @CodeStatusProduct",
-                new {CodeStatusProduct = reportData.CodeStatusProduct}, transaction);
-            if (statusProduct.AsList().Count == 0)
-            {
-                sqlConnection.Execute(@"INSERT INTO [dbo].[StatusProduct](CodeStatusProduct) 
-                                    VALUES (@CodeStatusProduct);",
-                    new {CodeStatusProduct = reportData.CodeStatusProduct}, transaction);
-            }
-
-            var idStatusProduct = sqlConnection.Query<StatusProduct>(@"SELECT * 
-                        FROM StatusProduct 
-                        WHERE CodeStatusProduct = @CodeStatusProduct",
-                new {CodeStatusProduct = reportData.CodeStatusProduct}, transaction);
-        }
-
-        private void InsertUnit(ReportData reportData, SqlConnection sqlConnection, SqlTransaction transaction)
-        {
-            var db = GetSqlConnection();
-
-            var unit = db.Query<Unit>(@"SELECT * 
-                        FROM Unit 
-                        WHERE NameUnit = @NameUnit",
-                new {NameUnit = reportData.NameUnit}, transaction);
-            if (unit.AsList().Count == 0)
-            {
-                db.Execute(@"INSERT INTO [dbo].[Unit](NameUnit) 
-                                    VALUES (@NameUnit);",
-                    new {NameUnit = reportData.NameUnit}, transaction);
-            }
-
-            var idUnit = db.Query<Unit>(@"SELECT * 
-                        FROM Unit 
-                        WHERE NameUnit = @NameUnit",
-                new {NameUnit = reportData.NameUnit}, transaction);
         }
 
         public void Dispose()

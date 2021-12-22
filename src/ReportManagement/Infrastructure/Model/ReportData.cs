@@ -4,7 +4,7 @@ namespace Infrastructure.Model
 {
     public class ReportData
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
         
         public string BrandName { get; set; }
         
