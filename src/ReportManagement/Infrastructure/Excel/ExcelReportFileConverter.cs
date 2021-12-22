@@ -12,21 +12,13 @@ namespace Infrastructure.Excel
 
     public class ExcelReportFileConverter : ISourceReportFileConverter
     {
-        const int BlockStatusRow = 6;
-        const int BrandRow = 5;
-        const int DepartmentRow = 1;
-        const int RealizationRow = 10;
-        const int ProductDisposalRow = 11;
-        const int ProductSurplusRow = 12;
-        const int LastShipmentDateRow = 13;
-        const int LastSaleDateRow = 14;
-        const int SellingPriceRow = 9;
-        const int UnitRow = 8;
-        const int CodeStatusProductRow = 7;
-        const int SectionRow = 2;
-        const int CodeProductRow = 3;
-        const int ProductRow = 4;
-        const int ExpirationDateRow = 15;
+        const int DepartmentNameRow = 1;
+        const int ProductCodeRow = 2;
+        const int ProductNameRow = 3;
+        const int BrandNameRow = 4;
+        const int RealizationQuantityRow = 5;
+        const int ReakizationSumRow = 6;
+        const int SurplusQuantityRow = 7;   
 
         public IReadOnlyCollection<ReportData> ConvertFrom(string path)
         {
@@ -44,46 +36,19 @@ namespace Infrastructure.Excel
                     foreach (var row in sheet.Rows())
                     {
                         var item = new ReportData();
-                        
-                        if (row.Cell(CodeProductRow).Value.ToString() == String.Empty)
+
+                        if (row.Cell(ProductCodeRow).Value.ToString() == String.Empty)
                         {
                             continue;
                         }
 
-                        item.NameBlockStatus = row.Cell(BlockStatusRow).Value.ToString()!;
-                        item.NameBrand = row.Cell(BrandRow).Value!.ToString()!;
-                        item.NameDepartment = row.Cell(DepartmentRow).Value!.ToString()!;
-                        item.Realization = Convert.ToDecimal(row.Cell(RealizationRow).Value);
-                        item.ProductDisposal = Convert.ToDecimal(row.Cell(ProductDisposalRow).Value);
-                        item.ProductSurplus = Convert.ToDecimal(row.Cell(ProductSurplusRow).Value);
-                        
-                        if (row.Cell(LastSaleDateRow).Value.ToString() == "0")
-                        {
-                            item.LastSaleDate = new DateTime(2000, 01, 01);
-                        }
-                        else
-                        {
-                            item.LastSaleDate =
-                                Convert.ToDateTime(row.Cell(LastSaleDateRow).Value);
-                        }
-                        
-                        if (row.Cell(LastShipmentDateRow).Value.ToString() == "0")
-                        {
-                            item.LastShipmentDate = new DateTime(2000, 01, 01);
-                        }
-                        else
-                        {
-                            item.LastShipmentDate =
-                                Convert.ToDateTime(row.Cell(LastShipmentDateRow).Value);
-                        }
-
-                        item.SellingPrice = Convert.ToDecimal(row.Cell(SellingPriceRow).Value);
-                        item.NameUnit = row.Cell(UnitRow).Value.ToString()!;
-                        item.CodeStatusProduct = Convert.ToInt32(row.Cell(CodeStatusProductRow).Value);
-                        item.NameSection = row.Cell(SectionRow).Value.ToString()!;
-                        item.CodeProduct = Convert.ToInt64(row.Cell(CodeProductRow).Value);
-                        item.NameProduct = row.Cell(ProductRow).Value.ToString()!;
-                        item.ExpirationDate = Convert.ToInt32(row.Cell(ExpirationDateRow).Value);
+                        item.DepartmentName = row.Cell(DepartmentNameRow).Value.ToString();
+                        item.ProductCode = Convert.ToInt64(row.Cell(ProductCodeRow).Value.ToString());                        
+                        item.ProductName = row.Cell(ProductNameRow).Value.ToString();
+                        item.BrandName = row.Cell(BrandNameRow).Value.ToString();
+                        item.RealizationQuantity = Convert.ToDecimal(row.Cell(RealizationQuantityRow).Value);                        
+                        item.RealizationSum = Convert.ToDecimal(row.Cell(ReakizationSumRow).Value);
+                        item.SurplusQuantity = Convert.ToDecimal(row.Cell(SurplusQuantityRow).Value.ToString());                       
                         list.Add(item);
                     }
                 }
@@ -98,45 +63,35 @@ namespace Infrastructure.Excel
 
         public void ConvertTo(string path, IReadOnlyCollection<ReportData> data)
         {
-            var excelData = from p in data 
-                select new { p.NameDepartment, 
-                    p.NameSection, 
-                    p.CodeProduct,
-                    p.NameProduct,
-                    p.NameBrand,
-                    p.NameBlockStatus,
-                    p.CodeStatusProduct,
-                    p.NameUnit,
-                    p.SellingPrice,
-                    p.Realization,
-                    p.ProductDisposal,
-                    p.ProductSurplus,
-                    p.LastShipmentDate,
-                    p.LastSaleDate,
-                    p.ExpirationDate };
+           var excelData = from p in data 
+                select new { p.DepartmentName, 
+                    p.ProductCode,
+                    p.ProductName,
+                    p.BrandName,
+                    p.RealizationQuantity,
+                    p.RealizationSum,
+                    p.SurplusQuantity,
+                            };
             var wb = new XLWorkbook();
-            var ws = wb.Worksheets.Add("Inserting Data");
-
-            ws.Cell(1, 1).Value = "Подразделения";
-            ws.Cell(1, 2).Value = "Наименование секции";
-            ws.Cell(1, 3).Value = "Код товара";
-            ws.Cell(1, 4).Value = "Наименование товара";
-            ws.Cell(1, 5).Value = "Бренд";
-            ws.Cell(1, 6).Value = "КИП";
-            ws.Cell(1, 7).Value = "Статус товара";
-            ws.Cell(1, 8).Value = "ЕИ";
-            ws.Cell(1, 9).Value = "Продаж. цена";
-            ws.Cell(1, 10).Value = "Торг. реал-ция / Кол-во";
-            ws.Cell(1, 11).Value = "Неторг. выбытие / Кол-во";
-            ws.Cell(1, 12).Value = "Исх. остаток / Кол-во";
-            ws.Cell(1, 13).Value = "[Последняя поставка]";
-            ws.Cell(1, 14).Value = "Дата последней продажи";
-            ws.Cell(1, 15).Value = "[Срок годности в днях]";
+            var ws = wb.Worksheets.Add("Report");
             ws.Cell(2, 1).InsertData(excelData);
-
+            
             wb.AddPivotTableSheet();
             
             wb.SaveAs(path);
+        }
+        public static void Coloring(string path, IReadOnlyCollection<ReportData> data)
+        {
+           var wb = new XLWorkbook();
+            var ws = wb.Worksheets.Add("Inserting Data");          
+            //ws.Column("J").Sort(XLSortOrder.Descending);
+            ws.Range("d2", "f1230").Style.Fill.BackgroundColor = XLColor.Yellow;
+            ws.Range("j2", "l1230").Style.Fill.BackgroundColor = XLColor.Yellow;
+           ws.Range("p2", "r1230").Style.Fill.BackgroundColor = XLColor.Yellow;
+            ws.Range("d1231", "r1231").Style.Fill.BackgroundColor = XLColor.Red;
+            ws.Range("d1232", "f1233").Style.Fill.BackgroundColor = XLColor.Yellow;
+            ws.Range("j1232", "l1233").Style.Fill.BackgroundColor = XLColor.Yellow;
+            ws.Range("p1232", "r1233").Style.Fill.BackgroundColor = XLColor.Yellow;
         }
     }
 }
