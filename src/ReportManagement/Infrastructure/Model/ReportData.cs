@@ -6,35 +6,19 @@ namespace Infrastructure.Model
     {
         public int Id { get; set; }
         
-        public string NameBlockStatus { get; set; }
+        public string BrandName { get; set; }
         
-        public string NameBrand { get; set; }
+        public string DepartmentName { get; set; }
         
-        public string NameDepartment { get; set; }
+        public decimal RealizationQuantity { get; set; }
         
-        public decimal Realization { get; set; }
+        public decimal RealizationSum { get; set; }
         
-        public decimal ProductDisposal { get; set; }
+        public decimal SurplusQuantity { get; set; }
         
-        public decimal ProductSurplus { get; set; }
+        public long ProductCode { get; set; }
         
-        public DateTime LastShipmentDate { get; set; }
-        
-        public DateTime LastSaleDate { get; set; }
-        
-        public decimal SellingPrice { get; set; }
-        
-        public string NameUnit { get; set; }
-        
-        public int CodeStatusProduct { get; set; }
-        
-        public string NameSection { get; set; }
-        
-        public long CodeProduct { get; set; }
-        
-        public string NameProduct { get; set; }
-        
-        public int ExpirationDate { get; set; }
-        
+        public string ProductName { get; set; }
+
     }
 }
