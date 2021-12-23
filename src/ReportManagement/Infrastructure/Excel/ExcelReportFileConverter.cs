@@ -14,13 +14,26 @@ namespace Infrastructure.Excel
     //TODO: TotalSum, styling,
     public class ExcelReportFileConverter : ISourceReportFileConverter
     {
-        const int DepartmentNameRow = 1;
-        const int ProductCodeRow = 2;
-        const int ProductNameRow = 3;
-        const int BrandNameRow = 4;
-        const int RealizationQuantityRow = 5;
-        const int RealizationSumRow = 6;
-        const int SurplusQuantityRow = 7;   
+        const int SectionNameColumn= 1;
+        const int ProductCodeColumn = 2;
+        const int ProductNameColumn = 3;
+        const int BrandNameColumn = 4;
+        const int BlockStatusNameColumn = 5;
+        const int ProductStatusCode = 6;
+        const int UnitNameColumn = 7;
+        const int PriceColumn = 8;
+        const int RealizationQuantityColumn = 9;
+        const int DisposalColumn = 10;
+        const int SurplusColumn = 11;
+        const int LastShipmentDateColumn = 12;
+        const int LastSaleDateColumn = 13;
+        const int ExpirationDateColumn = 14;
+        
+        const int HeaderRow = 1;
+        
+        const int DayMarginColumn = 12;
+        
+        
 
         public IReadOnlyCollection<ReportData> ConvertFrom(string path)
         {
@@ -34,24 +47,49 @@ namespace Infrastructure.Excel
 
                 foreach (var sheet in workbook.Worksheets)
                 {
-                    sheet.Row(1).Delete();
+
+                    if (sheet.Cell(sheet.FirstRowUsed().RowNumber(), sheet.FirstColumnUsed().ColumnNumber()).Value
+                        .Equals("Подразделения"))
+                    {
+                        sheet.FirstColumnUsed().Delete();
+                    }
+
+                    if (sheet.Cell(HeaderRow, DayMarginColumn).Value.ToString()?.ToLower().Contains("запас в днях") ?? false)
+                    {
+                        sheet.Cell(HeaderRow,DayMarginColumn).WorksheetColumn().Delete();
+                    }
+                    
                     foreach (var row in sheet.Rows())
                     {
-                        var item = new ReportData();
-
-                        if (row.Cell(ProductCodeRow).Value.ToString() == String.Empty)
+                        
+                        if(!long.TryParse(row.Cell(ProductCodeColumn).Value.ToString(), out _))
                         {
                             continue;
                         }
-
-                        item.DepartmentName = row.Cell(DepartmentNameRow).Value.ToString();
-                        item.ProductCode = Convert.ToInt64(row.Cell(ProductCodeRow).Value.ToString());                        
-                        item.ProductName = row.Cell(ProductNameRow).Value.ToString();
-                        item.BrandName = row.Cell(BrandNameRow).Value.ToString();
-                        item.RealizationQuantity = Convert.ToDecimal(row.Cell(RealizationQuantityRow).Value);                        
-                        item.RealizationSum = Convert.ToDecimal(row.Cell(RealizationSumRow).Value);
-                        item.SurplusQuantity = Convert.ToDecimal(row.Cell(SurplusQuantityRow).Value.ToString());                       
+                        
+                        
+                        var item = new ReportData
+                        {
+                            DepartmentName = string.Concat(sheet.Name[0].ToString().ToUpper(), sheet.Name.AsSpan(1)),
+                            SectionName = row.Cell(SectionNameColumn).Value.ToString()!,
+                            ProductName = row.Cell(ProductNameColumn).Value.ToString()!,
+                            BrandName = row.Cell(BrandNameColumn).Value.ToString()!,
+                            BlockStatusName = row.Cell(BlockStatusNameColumn).Value.ToString()!,
+                            ProductStatusCode = int.Parse(row.Cell(ProductStatusCode).Value.ToString()!),
+                            UnitName = row.Cell(UnitNameColumn).Value.ToString()!,
+                            Price = decimal.Parse(row.Cell(PriceColumn).Value.ToString()!),
+                            RealizationQuantity = decimal.Parse(row.Cell(RealizationQuantityColumn).Value.ToString()!),
+                            Disposal = decimal.Parse(row.Cell(DisposalColumn).Value.ToString()!),
+                            SurplusQuantity = decimal.Parse(row.Cell(SurplusColumn).Value.ToString()!),
+                            LastShipmentDate = row.Cell(LastShipmentDateColumn).Value as DateTime? ?? default(DateTime),
+                            LastSaleDate = row.Cell(LastSaleDateColumn).Value as DateTime? ?? default(DateTime),
+                            ExpirationDate = int.Parse(row.Cell(ExpirationDateColumn).Value.ToString()!)
+                            
+                        };
+                        
                         list.Add(item);
+                        
+                        
                     }
                 }
             }
@@ -71,7 +109,7 @@ namespace Infrastructure.Excel
                     p.ProductName,
                     p.BrandName,
                     p.RealizationQuantity,
-                    p.RealizationSum,
+                    p.Disposal,
                     p.SurplusQuantity};
             var wb = new XLWorkbook();
             var ws = wb.Worksheets.Add("Report");
