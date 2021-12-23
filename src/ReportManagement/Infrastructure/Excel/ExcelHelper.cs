@@ -57,10 +57,28 @@ namespace Infrastructure.Excel
                     reportSheet.Cell(i, j).FormulaA1 = formula;
 
                 }
-                
-                
             }
-
         }
+       public static void Style(this IXLWorkbook workbook)
+       {
+           var ws = workbook.Worksheet(1);    
+           
+           
+           ws.Columns().AdjustToContents(); 
+           ws.Rows().AdjustToContents();
+           
+           var q = ws.LastRowUsed().RowNumber();
+           var b = ws.LastColumnUsed().ColumnNumber();
+           ws.Range(1,1,q,b).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
+           ws.Range(1,1,q,b).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+
+           for (int i = 4; i <= ws.LastColumnUsed().ColumnNumber(); i += 3)
+           {
+               ws.Range(1,i,q,b).Style.Fill.BackgroundColor = XLColor.Yellow;
+               
+           }
+           ws.Range(q,4,q,b).Style.Fill.BackgroundColor = XLColor.Alizarin;
+           
+       }
     }
 }

@@ -66,25 +66,34 @@ namespace Infrastructure.Excel
                         {
                             continue;
                         }
-                        
-                        
+
                         var item = new ReportData
                         {
                             DepartmentName = string.Concat(sheet.Name[0].ToString().ToUpper(), sheet.Name.AsSpan(1)),
                             SectionName = row.Cell(SectionNameColumn).Value.ToString()!,
                             ProductName = row.Cell(ProductNameColumn).Value.ToString()!,
+                            ProductCode = Convert.ToInt64(row.Cell(ProductCodeColumn).Value),
                             BrandName = row.Cell(BrandNameColumn).Value.ToString()!,
                             BlockStatusName = row.Cell(BlockStatusNameColumn).Value.ToString()!,
                             ProductStatusCode = int.Parse(row.Cell(ProductStatusCode).Value.ToString()!),
                             UnitName = row.Cell(UnitNameColumn).Value.ToString()!,
-                            Price = decimal.Parse(row.Cell(PriceColumn).Value.ToString()!),
+                            Price = Convert.ToDecimal(row.Cell(PriceColumn).Value),
                             RealizationQuantity = decimal.Parse(row.Cell(RealizationQuantityColumn).Value.ToString()!),
-                            Disposal = decimal.Parse(row.Cell(DisposalColumn).Value.ToString()!),
-                            SurplusQuantity = decimal.Parse(row.Cell(SurplusColumn).Value.ToString()!),
-                            LastShipmentDate = row.Cell(LastShipmentDateColumn).Value as DateTime? ?? default(DateTime),
-                            LastSaleDate = row.Cell(LastSaleDateColumn).Value as DateTime? ?? default(DateTime),
-                            ExpirationDate = int.Parse(row.Cell(ExpirationDateColumn).Value.ToString()!)
+                            Disposal = Convert.ToDecimal(row.Cell(DisposalColumn).Value),
+                            SurplusQuantity = Convert.ToDecimal(row.Cell(SurplusColumn).Value),
                             
+                            LastShipmentDate = row.Cell(LastShipmentDateColumn).Value.ToString() == "0" 
+                                ? new DateTime(2000,01,01) 
+                                : DateTime.TryParse(row.Cell(LastShipmentDateColumn).Value.ToString(), out _) 
+                                    ? DateTime.Parse(row.Cell(LastShipmentDateColumn).Value.ToString()!) 
+                                    : DateTime.FromOADate(Convert.ToDouble(row.Cell(LastShipmentDateColumn).Value)),
+                            
+                            LastSaleDate = row.Cell(LastSaleDateColumn).Value.ToString() == "0" 
+                                ? new DateTime(2000,01,01) 
+                                : DateTime.TryParse(row.Cell(LastSaleDateColumn).Value.ToString(), out _) 
+                                    ? DateTime.Parse(row.Cell(LastSaleDateColumn).Value.ToString()!) 
+                                    : DateTime.FromOADate(Convert.ToDouble(row.Cell(LastSaleDateColumn).Value)),
+                            ExpirationDate = Convert.ToInt32(row.Cell(ExpirationDateColumn).Value)
                         };
                         
                         list.Add(item);
@@ -149,12 +158,11 @@ namespace Infrastructure.Excel
                     .Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
                 
                 ws.Cell(headerRow, headerColumn).Value = departmentName;
-                ws.Cell(headerRow + 1, headerColumn).Value = "Кол-во";
-                ws.Cell(headerRow + 1, headerColumn + 1).Value = "Продажи";
-                ws.Cell(headerRow + 1, headerColumn + 2).Value = "Остаток";
+                ws.Cell(headerRow + 1, headerColumn).Value = "Торг. реал-ция / Кол-во";
+                ws.Cell(headerRow + 1, headerColumn + 1).Value = "Неторг. выбытие / Кол-во";
+                ws.Cell(headerRow + 1, headerColumn + 2).Value = "Исх. остаток / Кол-во";
                 
                 headerColumn += 3;
-
             }
             
             //Product headers
@@ -191,7 +199,7 @@ namespace Infrastructure.Excel
                     if (currentData.Any())
                     {
                         var values = currentData.Select(x => new
-                            {x.RealizationQuantityTotal, x.RealizationSumTotal, x.SurplusQuantityTotal});
+                            {x.RealizationQuantityTotal, x.Disposal, x.SurplusQuantityTotal});
 
 
                         ws.Cell(j + valueRow, valueColumn ).InsertData(values);
@@ -200,26 +208,24 @@ namespace Infrastructure.Excel
                 }
                 
                 valueColumn += 3;
-                
             }
-                
-   
-            wb.SaveAs(path);
 
-        }
-        
-        public static void Coloring(string path, IReadOnlyCollection<ReportData> data)
-        {
-           var wb = new XLWorkbook();
-           var ws = wb.Worksheets.Add("Inserting Data");          
-           ws.Column("J").Sort(XLSortOrder.Descending);
-           ws.Range("d2", "f1230").Style.Fill.BackgroundColor = XLColor.Yellow;
-           ws.Range("j2", "l1230").Style.Fill.BackgroundColor = XLColor.Yellow;
-           ws.Range("p2", "r1230").Style.Fill.BackgroundColor = XLColor.Yellow;
-           ws.Range("d1231", "r1231").Style.Fill.BackgroundColor = XLColor.Red;
-           ws.Range("d1232", "f1233").Style.Fill.BackgroundColor = XLColor.Yellow;
-           ws.Range("j1232", "l1233").Style.Fill.BackgroundColor = XLColor.Yellow;
-           ws.Range("p1232", "r1233").Style.Fill.BackgroundColor = XLColor.Yellow;
+            var formulaRow = ws.LastRowUsed().RowNumber() + 1;
+
+
+            ws.Cell(formulaRow, 1).Value = "Общий итог";
+
+            for (var i = 1; i <= departmentNameList.Count() * 3; i++)
+            {
+                var formulaColumn = i + 3;
+                var firstCell = ws.Cell(3, formulaColumn).Address;
+                var lastCell = ws.Cell(formulaRow - 1, formulaColumn).Address;
+                string formula = $"=SUM({firstCell}:{lastCell})";
+                ws.Cell(formulaRow, formulaColumn).FormulaA1 = formula;
+            }
+            ws.RecalculateAllFormulas();
+            wb.Style();
+            wb.SaveAs(path, true, true);
         }
     }
 }

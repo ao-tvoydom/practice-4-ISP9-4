@@ -27,7 +27,7 @@ namespace Infrastructure
                      BrandName,
                      DepartmentName,
                      RealizationQuantity,
-                     RealizationSum,
+                     Disposal,
                      SurplusQuantity,
                      ProductCode,
                      ProductName
@@ -45,7 +45,7 @@ namespace Infrastructure
                     BrandName,
                     DepartmentName,
                     RealizationQuantity,
-                    RealizationSum,
+                    Disposal,
                     SurplusQuantity,
                     ProductCode,
                     ProductName 
@@ -65,14 +65,15 @@ namespace Infrastructure
             {
                 foreach (var reportData in reportDataList)
                 {
+                    var a = reportData;
+                    InsertSection(reportData, db, transaction);
+                    InsertUnit(reportData, db, transaction);
                     InsertBlockStatus(reportData, db, transaction);
                     InsertBrand(reportData, db, transaction);
                     InsertDepartment(reportData, db, transaction);
-                    InsertProduct(reportData, db, transaction);
                     InsertProductStatus(reportData, db, transaction);
+                    InsertProduct(reportData, db, transaction);
                     InsertSale(reportData, db, transaction);
-                    InsertSection(reportData, db, transaction);
-                    InsertUnit(reportData, db, transaction);
                 }
                 transaction.Commit();
             }
@@ -159,7 +160,6 @@ namespace Infrastructure
             var sale = new Sale();
 
             sale.RealizationQuantity = reportData.RealizationQuantity;
-            //sale.RealizationSum = reportData.RealizationSum;
             sale.SurplusQuantity = reportData.SurplusQuantity;
             sale.Disposal = reportData.Disposal;
             sale.LastShipmentDate = reportData.LastShipmentDate;
@@ -179,7 +179,7 @@ namespace Infrastructure
                     ProductName = reportData.ProductName,
                     ProductCode = reportData.ProductCode
                 }, transaction);
-            sale.BlockStatusID = sqlConnection.QueryFirst<int>(@"SELECT ID
+            sale.BlockStatusID = sqlConnection.QueryFirst<int>(@"SELECT BlockStatusID
                                     FROM BlockStatus
                                     WHERE BlockStatusName = @BlockStatusName",
                 new {BlockStatusName = reportData.BlockStatusName}, transaction);
@@ -222,12 +222,10 @@ namespace Infrastructure
 
             duplicateProducts.AddRange(sqlConnection.Query<Product>(@"SELECT *
                                     FROM Product
-                                    WHERE ProductCode = @ProductCode
-                                    AND ProductName = @ProductName",
+                                    WHERE ProductCode = @ProductCode",
                 new
                 {
-                    ProductCode = reportData.ProductCode,
-                    ProductName = reportData.ProductName
+                    ProductCode = reportData.ProductCode
                 }, transaction));
 
             if (duplicateProducts.Count != 0)
@@ -237,6 +235,8 @@ namespace Infrastructure
 
             product.Code = reportData.ProductCode;
             product.Name = reportData.ProductName;
+            product.Price = reportData.Price;
+            product.ExpirationDate = reportData.ExpirationDate;
 
             product.BrandID = sqlConnection.QueryFirst<int>(@"SELECT BrandID
                                     FROM Brand
@@ -310,19 +310,19 @@ namespace Infrastructure
         {
             var productStatus = sqlConnection.Query<ProductStatus>(@"SELECT * 
                         FROM ProductStatus 
-                        WHERE ProductCode = @ProductCode",
-                new {ProductCode = reportData.ProductCode}, transaction);
+                        WHERE ProductStatusCode = @ProductStatusCode",
+                new {ProductStatusCode = reportData.ProductStatusCode}, transaction);
             if (productStatus.AsList().Count == 0)
             {
-                sqlConnection.Execute(@"INSERT INTO [dbo].[ProductStatus](ProductCode) 
-                                    VALUES (@ProductCode);",
-                    new {ProductCode = reportData.ProductCode}, transaction);
+                sqlConnection.Execute(@"INSERT INTO [dbo].[ProductStatus](ProductStatusCode) 
+                                    VALUES (@ProductStatusCode);",
+                    new {ProductStatusCode = reportData.ProductStatusCode}, transaction);
             }
 
             var idProductStatus = sqlConnection.Query<ProductStatus>(@"SELECT * 
                         FROM ProductStatus 
-                        WHERE ProductCode = @ProductCode",
-                new {ProductCode = reportData.ProductCode}, transaction);
+                        WHERE ProductStatusCode = @ProductStatusCode",
+                new {ProductStatusCode = reportData.ProductStatusCode}, transaction);
         }
         
         private void InsertUnit(ReportData reportData, SqlConnection sqlConnection, SqlTransaction transaction)
@@ -354,7 +354,7 @@ namespace Infrastructure
                      BrandName,
                      DepartmentName,
                      RealizationQuantityTotal,
-                     RealizationSumTotal,
+                     Disposal,
                      SurplusQuantityTotal
                      FROM [dbo].[PivotView]
                      "

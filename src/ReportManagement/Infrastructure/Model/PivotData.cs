@@ -12,7 +12,7 @@
 
         public decimal RealizationQuantityTotal { get; set; }
 
-        public decimal RealizationSumTotal { get; set; }
+        public decimal Disposal { get; set; }
 
         public decimal SurplusQuantityTotal { get; set; }
 
