@@ -10,7 +10,7 @@ namespace UILayer
     /// </summary>
     public partial class MainWindow : Window
     {
-        private string[] _pathToFile = null!; 
+        private int fileOpen = 0;
         
         const string defExtension = "xls";
         
@@ -35,7 +35,7 @@ namespace UILayer
         
         private void CreateReport_OnClick(object sender, RoutedEventArgs e)
         {
-            if (_pathToFile == null)
+            if (fileOpen != 1)
             {
                 MessageBox.Show("Выберите файлы");
             }
@@ -49,26 +49,36 @@ namespace UILayer
         
         private void ImportFile_OnClick(object sender, RoutedEventArgs e)
         {
-            var openFileDialog = new OpenFileDialog
+            try
             {
-                InitialDirectory = @"c:\",
-                Multiselect = true,
-                DefaultExt = defExtension,
-                Filter = "xls files (*.xls)|*.xls|xlsx files (*.xlsx)|*.xlsx",
-                FilterIndex = 2,
-                RestoreDirectory = true
-            };
+                
+                var openFileDialog = new OpenFileDialog
+                {
+                    InitialDirectory = @"c:\",
+                    Multiselect = true,
+                    DefaultExt = defExtension,
+                    Filter = "xls files (*.xls)|*.xls|xlsx files (*.xlsx)|*.xlsx",
+                    FilterIndex = 2,
+                    RestoreDirectory = true
+                };
 
-            bool? result = openFileDialog.ShowDialog();
+                bool? result = openFileDialog.ShowDialog();
 
                 if (result == true) // выполняется при нажатии ОК на выборе файлов
                 {
+                    fileOpen = 1;
                     //openFileDialog.FileNames // массив с полными путями всех выбранных файлов
                 }
                 else
                 {
-                    MessageBox.Show("Файлы не выбраны");
+                    MessageBox.Show("Файлы не выбраны!");
                 }
+                
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.ToString());
+            }
         }
         private void Exit_OnClick(object sender, RoutedEventArgs e)
         {
