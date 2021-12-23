@@ -147,8 +147,13 @@ namespace Infrastructure
             
             sale.ProductID = sqlConnection.QueryFirst<int>(@"SELECT ProductID
                                     FROM Product
-                                    WHERE ProductName = @ProductName",
-                new {ProductName = reportData.ProductName}, transaction);
+                                    WHERE ProductName = @ProductName 
+                                    AND ProductCode = @ProductCode",
+                new
+                {
+                    ProductName = reportData.ProductName,
+                    ProductCode = reportData.ProductCode
+                }, transaction);
 
             sqlConnection.Execute(@"INSERT INTO [dbo].[Sale]([DepartmentID],
                                                             [ProductID],

@@ -1,4 +1,6 @@
-﻿namespace Infrastructure.Model
+﻿using System;
+
+namespace Infrastructure.Model
 {
     public class Sale
     {
@@ -14,5 +16,12 @@
 
         public decimal SurplusQuantity { get; set; }
         
+        public int BlockStatusID { get; set; }
+        
+        public DateTime LastShipmentDate { get; set; }
+        
+        public DateTime LastSaleDate { get; set; }
+        
+        public decimal Disposal { get; set; }
     }
 }
