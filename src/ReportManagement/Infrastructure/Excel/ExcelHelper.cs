@@ -10,7 +10,7 @@ namespace Infrastructure.Excel
     internal static class ExcelHelper
     {
 
-        //TODO: Columns; lastCellRow
+        
         public static void  AddPivotTableSheet(this XLWorkbook workbook)
         {
 
@@ -33,25 +33,34 @@ namespace Infrastructure.Excel
             pivotTable.Values.Add("Сумма по полю Исх. остаток / Кол-во");
         }
 
-       //public static void AddResultSheet(this XLWorkbook workbook)
-        //{
-            //var report = workbook.Worksheets.Add("ReportSheet");
+       public static void AddResultSheet(this XLWorkbook workbook)
+        {
+            var reportSheet = workbook.Worksheets.Add("ReportSheet");
 
-            //var tableList = workbook.Worksheet(1).Cell(4, 3).CachedValue;
+            var pivotSheet = workbook.Worksheet(2);
             
+            var pivotTable = pivotSheet.PivotTable("Pivot Table");
             
+            var rowCount = pivotTable.SourceRange.RowCount();
+            var columnCount = pivotTable.SourceRange.ColumnCount() 
+                              * pivotTable.ColumnLabels.Count() 
+                              * pivotTable.Values.Count();
             
-            
-            
-            
-            
-            //foreach (var row in tableList.Rows())
-            //{
-                //foreach (var cell in row.Cells())
-                //{
-                //    report.Cell(cell.Address).Value = cell.Value;
-                //}
-            //}
-        //}
+            for (int i = 1; i < rowCount; i++)
+            {
+
+                for (int j = 1; j < columnCount; j++)
+                {
+
+                    var currentCellAddress = reportSheet.Cell(i, j).Address;
+                    string formula = $"=IF('Сводная таблица'!{currentCellAddress}=\"\",\"\",'Сводная таблица'!{currentCellAddress})";
+                    reportSheet.Cell(i, j).FormulaA1 = formula;
+
+                }
+                
+                
+            }
+
+        }
     }
 }

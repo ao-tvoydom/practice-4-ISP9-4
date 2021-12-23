@@ -25,7 +25,7 @@ namespace DataProcessing.Services
 
         public void ImportReportToExcel(string path)
         {
-            var report = _reportRepository.GetAll();
+            var report = _reportRepository.GetPivotData();
             _reportFileConverter.ConvertTo(path,report);
         }
     }

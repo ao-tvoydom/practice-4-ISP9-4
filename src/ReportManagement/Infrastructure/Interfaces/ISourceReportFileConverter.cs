@@ -8,5 +8,7 @@ namespace Infrastructure.Interfaces
     {
         IReadOnlyCollection<ReportData> ConvertFrom(string path);
         void ConvertTo(string path, IReadOnlyCollection<ReportData> data);
+        
+        void ConvertTo(string path, IReadOnlyCollection<PivotData> data);
     }
 }

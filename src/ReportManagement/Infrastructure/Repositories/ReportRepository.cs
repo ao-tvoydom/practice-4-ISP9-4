@@ -131,6 +131,7 @@ namespace Infrastructure
                 new {DepartmentName = reportData.DepartmentName}, transaction);
         }
 
+        //TODO: Find product by code + name
         private void InsertSale(ReportData reportData, SqlConnection sqlConnection, SqlTransaction transaction)
         {
             var sale = new Sale();
@@ -211,6 +212,25 @@ namespace Infrastructure
                     ProductName = product.Name,
                     BrandID = product.BrandID,
                 }, transaction);
+        }
+        
+        public IReadOnlyCollection<PivotData> GetPivotData()
+        {
+            var db = GetSqlConnection();
+
+            var response = db.Query<PivotData>(@"SELECT 
+                     ProductCode,
+                     ProductName,
+                     BrandName,
+                     DepartmentName,
+                     RealizationQuantityTotal,
+                     RealizationSumTotal,
+                     SurplusQuantityTotal
+                     FROM [dbo].[PivotView]
+                     "
+            );
+
+            return response.ToList();
         }
 
         public void Dispose()

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using ClosedXML.Excel;
@@ -10,6 +11,7 @@ using Infrastructure.Model;
 namespace Infrastructure.Excel
 {
 
+    //TODO: TotalSum, styling,
     public class ExcelReportFileConverter : ISourceReportFileConverter
     {
         const int DepartmentNameRow = 1;
@@ -84,11 +86,90 @@ namespace Infrastructure.Excel
             ws.Cell(1, 7).Value = "Сумма по полю Исх. остаток / Кол-во";
             ws.Cell(2, 1).InsertData(excelData);
             
-            wb.AddPivotTableSheet();
-            //wb.AddResultSheet();
-            
             wb.SaveAs(path);
+
         }
+
+        public void ConvertTo(string path, IReadOnlyCollection<PivotData> data)
+        {
+            
+            var wb = new XLWorkbook();
+            var ws = wb.Worksheets.Add("Report");
+
+            var departmentNameList = data.Select(x => x.DepartmentName).Distinct().ToList();
+
+            //Department headers
+
+            const int headerRow = 1;
+            var headerColumn = 4;
+            foreach (var departmentName in departmentNameList)
+            {
+                
+                ws.Range(headerRow, headerColumn, headerRow, headerColumn + 2)
+                    .Row(headerRow)
+                    .Merge()
+                    .Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+                
+                ws.Cell(headerRow, headerColumn).Value = departmentName;
+                ws.Cell(headerRow + 1, headerColumn).Value = "Кол-во";
+                ws.Cell(headerRow + 1, headerColumn + 1).Value = "Продажи";
+                ws.Cell(headerRow + 1, headerColumn + 2).Value = "Остаток";
+                
+                headerColumn += 3;
+
+            }
+            
+            //Product headers
+            
+            ws.Cell(2, 1).Value = "Код продукта";
+            ws.Cell(2, 2).Value = "Наименование товара";
+            ws.Cell(2, 3).Value = "Бренд";
+            
+            //PivotTable Rows
+
+            var rowData = data
+                .DistinctBy(x => x.ProductCode)
+                .Select(x=> new {x.ProductCode, x.ProductName, x.BrandName})
+                .OrderBy(x=> x.ProductCode).ToList();
+
+            ws.Cell(3, 1).InsertData(rowData);
+            
+            //PivotTable Values
+
+            const int valueRow = 2; 
+            var valueColumn = 4;
+
+
+            for (var i = 1; i <= departmentNameList.Count(); i++)
+            {
+                for (var j = 1; j <= rowData.Count(); j++)
+                {
+
+                    string currentDepartmentName = departmentNameList[i-1];
+                    var currentProductCode = rowData[j-1].ProductCode;
+                    var currentData = data.Where(x => x.DepartmentName == currentDepartmentName
+                                                      && x.ProductCode == currentProductCode);
+
+                    if (currentData.Any())
+                    {
+                        var values = currentData.Select(x => new
+                            {x.RealizationQuantityTotal, x.RealizationSumTotal, x.SurplusQuantityTotal});
+
+
+                        ws.Cell(j + valueRow, valueColumn ).InsertData(values);
+                    }
+
+                }
+                
+                valueColumn += 3;
+                
+            }
+                
+   
+            wb.SaveAs(path);
+
+        }
+        
         public static void Coloring(string path, IReadOnlyCollection<ReportData> data)
         {
            var wb = new XLWorkbook();
