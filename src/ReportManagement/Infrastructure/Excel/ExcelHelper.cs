@@ -71,9 +71,18 @@ namespace Infrastructure.Excel
            var b = ws.LastColumnUsed().ColumnNumber();
            ws.Range(1,1,q,b).Style.Border.InsideBorder = XLBorderStyleValues.Thin;
            ws.Range(1,1,q,b).Style.Border.OutsideBorder = XLBorderStyleValues.Thin;
+           
+           
+           int a = 1;
 
            for (int i = 4; i <= ws.LastColumnUsed().ColumnNumber(); i += 3)
            {
+               if (a % 2 != 0)
+               {
+                   continue;
+               }
+
+               a++;
                ws.Range(1,i,q,b).Style.Fill.BackgroundColor = XLColor.Yellow;
                
            }
