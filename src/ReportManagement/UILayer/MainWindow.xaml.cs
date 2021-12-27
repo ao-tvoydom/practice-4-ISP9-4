@@ -5,6 +5,7 @@ using DocumentFormat.OpenXml.CustomProperties;
 using Infrastructure;
 using Infrastructure.Excel;
 using System.Configuration;
+using System.IO;
 using DataProcessing.Interfaces;
 using DataProcessing.Services;
 using Infrastructure.Interfaces;
@@ -23,7 +24,7 @@ namespace UILayer
         
         private string[] _pathToFile = null!; 
         
-        const string defExtension = "xls";
+        const string defExtension = "xlsx";
         
         public MainWindow( IServiceScopeFactory serviceScopeFactory)
         {
@@ -43,16 +44,33 @@ namespace UILayer
         
         private void CreateReport_OnClick(object sender, RoutedEventArgs e)
         {
-            if (_pathToFile == null)
+            
+            var saveFileDialog = new SaveFileDialog
             {
-                MessageBox.Show("Выберите файлы");
-            }
-            else
+                FileName = "ExcelReport.xlsx",
+                DefaultExt = defExtension,
+                AddExtension = true,
+                Filter = "xls files (*.xls)|*.xls|xlsx files (*.xlsx)|*.xlsx",
+                InitialDirectory = @"c:\"
+                
+            };
+
+            var result = saveFileDialog.ShowDialog();
+   
+            if (result != true) return;
+
+            var savePath = saveFileDialog.FileName;
+            
+            using (var scope = _serviceScopeFactory.CreateScope())
             {
-                ResultWindow resultWindow = new ResultWindow();
-                resultWindow.Show();
-                this.Close();
+                var sp = scope.ServiceProvider;
+                var dataProcessingService = sp.GetRequiredService<IDataProcessingService>();
+                dataProcessingService.ImportReportToExcel(savePath!);
             }
+            
+            MessageBox.Show("Отчёт создан","Успех",MessageBoxButton.OK,MessageBoxImage.Information);
+            
+            
         }
         
         private void ImportFile_OnClick(object sender, RoutedEventArgs e)

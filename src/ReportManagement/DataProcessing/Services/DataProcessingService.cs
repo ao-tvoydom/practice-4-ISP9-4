@@ -23,6 +23,10 @@ namespace DataProcessing.Services
             _reportRepository.Add(convertedForm);
         }
 
-        
+        public void ImportReportToExcel(string path)
+        {
+            var report = _reportRepository.GetPivotData();
+            _reportFileConverter.ConvertTo(path,report);
+        }
     }
 }
