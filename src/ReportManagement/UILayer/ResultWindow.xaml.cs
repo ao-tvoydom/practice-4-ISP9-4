@@ -2,6 +2,8 @@
 using System.Windows.Input;
 using System.Net.Mail;
 using System.Net;
+using System;
+
 
 namespace UILayer
 {
@@ -28,28 +30,36 @@ namespace UILayer
         
         private void SendByEmail_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
-            // отправитель - устанавливаем адрес и отображаемое в письме имя
-            MailAddress addressFrom = new MailAddress("fill_SendingEmailAddress", "fill_Name");
-            // кому отправляем
-            MailAddress addressTo = new MailAddress("fill_RecievingEmailAddress");
-            // создаем объект сообщения
-            MailMessage message = new MailMessage(addressFrom, addressTo);
-            // тема письма
-            message.Subject = "fill_Subject";
-            // текст письма
-            message.Body = "<h2>Текст-письма-в-виде-html</h2>";
-            // письмо представляет код html (если нужно)
-            message.IsBodyHtml = true;
-            // адрес smtp-сервера и порт, с которого будем отправлять письмо
-            SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
-            // логин и пароль отправителя
-            smtp.Credentials = new NetworkCredential("fill_SendingEmailAddress", "fill_SendingEmailPassword");
-            smtp.EnableSsl = true;
-            smtp.Send(message);
+
+            string mailTo = Microsoft.VisualBasic.Interaction.InputBox("Введите почту на которую будет отправлен отчет:","Введите почту");
             
-            //обязательная подтверждающая обратная связь
-            //(при надобности добавить информацию из письма в сообщение)
-            MessageBox.Show("Письмо отправленно");
+            try
+            {
+                // отправитель - устанавливаем адрес и отображаемое в письме имя
+                MailAddress addressFrom = new MailAddress("fill_SendingEmailAddress", "fill_Name");
+                // кому отправляем
+                MailAddress addressTo = new MailAddress(mailTo);
+                // создаем объект сообщения
+                MailMessage message = new MailMessage(addressFrom, addressTo);
+                // тема письма
+                message.Subject = "Отчёт!";
+                // текст письма
+                message.Body = "<h2>Отчёт!</h2>";
+                // письмо представляет код html (если нужно)
+                message.IsBodyHtml = true;
+                // адрес smtp-сервера и порт, с которого будем отправлять письмо
+                SmtpClient smtp = new SmtpClient("smtp.gmail.com", 587);
+                // логин и пароль отправителя
+                smtp.Credentials = new NetworkCredential("fill_SendingEmailAddress", "fill_SendingEmailPassword");
+                smtp.EnableSsl = true;
+                smtp.Send(message);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(e.ToString());
+            }
+            
+
         }
         
         private void UploadExcelFile_OnClick(object sender, RoutedEventArgs e)

@@ -1,15 +1,6 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Input;
-using DocumentFormat.OpenXml.CustomProperties;
-using Infrastructure;
-using Infrastructure.Excel;
-using System.Configuration;
-using System.IO;
-using DataProcessing.Interfaces;
-using DataProcessing.Services;
-using Infrastructure.Interfaces;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Win32;
 
 namespace UILayer
@@ -19,6 +10,20 @@ namespace UILayer
     /// </summary>
     public partial class MainWindow : Window
     {
+
+        private int fileOpen = 0;
+        
+        const string defExtension = "xls";
+        
+        public static MainWindow Window;
+        public MainWindow()
+        {
+            InitializeComponent();
+        }
+
+        private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
+        {
+            Window = this;
 
         private readonly IServiceScopeFactory _serviceScopeFactory;
         
@@ -38,12 +43,28 @@ namespace UILayer
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
+
+                MainWindow.Window.DragMove();
+
                 this.DragMove();
+
             }
         }
         
         private void CreateReport_OnClick(object sender, RoutedEventArgs e)
         {
+
+            if (fileOpen != 1)
+            {
+                MessageBox.Show("Выберите файлы");
+            }
+            else
+            {
+                ResultWindow resultWindow = new ResultWindow();
+                resultWindow.Show();
+                this.Close();
+            }
+
             
             var saveFileDialog = new SaveFileDialog
             {
@@ -71,10 +92,43 @@ namespace UILayer
             MessageBox.Show("Отчёт создан","Успех",MessageBoxButton.OK,MessageBoxImage.Information);
             
             
+
         }
         
         private void ImportFile_OnClick(object sender, RoutedEventArgs e)
         {
+
+            try
+            {
+                
+                var openFileDialog = new OpenFileDialog
+                {
+                    InitialDirectory = @"c:\",
+                    Multiselect = true,
+                    DefaultExt = defExtension,
+                    Filter = "xls files (*.xls)|*.xls|xlsx files (*.xlsx)|*.xlsx",
+                    FilterIndex = 2,
+                    RestoreDirectory = true
+                };
+
+                bool? result = openFileDialog.ShowDialog();
+
+                if (result == true) // выполняется при нажатии ОК на выборе файлов
+                {
+                    fileOpen = 1;
+                    //openFileDialog.FileNames // массив с полными путями всех выбранных файлов
+                }
+                else
+                {
+                    MessageBox.Show("Файлы не выбраны!");
+                }
+                
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.ToString());
+            }
+
             var openFileDialog = new OpenFileDialog
             {
                 InitialDirectory = @"c:\",
@@ -97,7 +151,6 @@ namespace UILayer
             }
 
             MessageBox.Show("Данные успешно загружены в базу данных","Успех",MessageBoxButton.OK,MessageBoxImage.Information);
-
 
         }
         private void Exit_OnClick(object sender, RoutedEventArgs e)
