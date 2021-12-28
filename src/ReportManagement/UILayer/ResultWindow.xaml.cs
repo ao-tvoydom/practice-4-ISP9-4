@@ -4,6 +4,7 @@ using System.Net.Mail;
 using System.Net;
 using System;
 
+
 namespace UILayer
 {
     public partial class ResultWindow : Window
@@ -29,6 +30,7 @@ namespace UILayer
         
         private void SendByEmail_OnClick(object sender, RoutedEventArgs routedEventArgs)
         {
+
             string mailTo = Microsoft.VisualBasic.Interaction.InputBox("Введите почту на которую будет отправлен отчет:","Введите почту");
             
             try
@@ -57,7 +59,7 @@ namespace UILayer
                 MessageBox.Show(e.ToString());
             }
             
-            
+
         }
         
         private void UploadExcelFile_OnClick(object sender, RoutedEventArgs e)
